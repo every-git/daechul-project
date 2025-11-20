@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+    version="3.1">
+
+    <!-- 회원 관련 Front Controller -->
+    <servlet>
+        <servlet-name>MemberServlet</servlet-name>
+        <servlet-class>com.saeyan.controller.MemberServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MemberServlet</servlet-name>
+        <url-pattern>/MemberServlet</url-pattern>
+    </servlet-mapping>
+
+    <!-- 게시판 Front Controller (web-study-11과 동일) -->
+    <servlet>
+        <servlet-name>BoardServlet</servlet-name>
+        <servlet-class>com.saeyan.controller.BoardServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BoardServlet</servlet-name>
+        <url-pattern>/BoardServlet</url-pattern>
+    </servlet-mapping>
+
+    <!-- 관리자 Front Controller -->
+    <servlet>
+        <servlet-name>AdminServlet</servlet-name>
+        <servlet-class>com.saeyan.controller.AdminServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminServlet</servlet-name>
+        <url-pattern>/AdminServlet</url-pattern>
+    </servlet-mapping>
+
+    <!-- 기본 페이지 설정 -->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>
