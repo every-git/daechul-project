@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>게시글 삭제</title>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
 </head>
 <body>
     <script>

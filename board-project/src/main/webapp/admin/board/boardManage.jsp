@@ -1,15 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ include file="../../common/checkAdmin.jsp" %>
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>게시판 관리</title>
-    <link rel="stylesheet" href="../../css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판 관리 - 관리자</title>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
 </head>
 <body>
     <div class="container">
-        <h2>게시판 관리 (전체 게시글)</h2>
+        <h2>📋 게시판 관리 (전체 게시글)</h2>
         
         <table class="admin-table">
             <thead>
@@ -31,8 +33,7 @@
                         <td>${board.regdate}</td>
                         <td>${board.hit}</td>
                         <td>
-                            <a href="../../BoardServlet?command=board_update_form&amp;seq=${board.seq}">수정</a>
-                            <a href="../../AdminServlet?command=board_manage_delete&amp;seq=${board.seq}" 
+                            <a href="${pageContext.request.contextPath}/AdminServlet?command=board_manage_delete&amp;seq=${board.seq}" 
                                onclick="return confirm('삭제하시겠습니까?')">삭제</a>
                         </td>
                     </tr>
@@ -41,7 +42,7 @@
         </table>
         
         <div class="links">
-            <a href="../adminMain.jsp">관리자 메인</a>
+            <a href="${pageContext.request.contextPath}/AdminServlet?command=admin_main">관리자 메인</a>
         </div>
     </div>
 </body>

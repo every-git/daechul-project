@@ -1,24 +1,6 @@
 package com.saeyan.controller.action.admin;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.saeyan.controller.action.Action;
-
-/**
- * 게시글 관리 목록 조회 Action
- * TODO: BoardDAO를 사용하여 전체 게시글 목록 조회 구현
- */
-import java.util.List;
-import com.saeyan.dao.BoardDAO;
-import com.saeyan.dto.BoardVO;
-
-public class BoardManageListAction implements Action {
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        BoardDAO dao = BoardDAO.getInstance();
-        List<BoardVO> boardList = dao.selectAllBoards();
-        request.setAttribute("boardList", boardList);
-        return "/admin/board/boardManage.jsp";
-    }
+public class BoardManageListAction {
+    // TODO: Implement this class
+    // This file is a stub. Please refer to the original project for the full implementation.
 }

@@ -10,7 +10,7 @@
         return;
     }
     
-    if (!"ADMIN".equals(userRole)) {
+    if (userRole == null || !"ADMIN".equalsIgnoreCase(userRole)) {
         // 관리자가 아닌 경우
         out.println("<script>");
         out.println("alert('관리자만 접근 가능합니다.');");

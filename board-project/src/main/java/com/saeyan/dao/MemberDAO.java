@@ -267,4 +267,37 @@ public class MemberDAO {
 
         return result;
     }
+
+    /**
+     * 회원 삭제 (강제 탈퇴)
+     * 
+     * @param id 삭제할 회원의 아이디
+     * @return 1: 성공, 0: 실패, -1: DB 오류
+     */
+    public int deleteMember(String id) {
+        int result = -1;
+
+        String sql = "delete from members where id = ?";
+        Connection con = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            con = DBManager.getConnection();
+            if (con == null) {
+                return -1;
+            }
+
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, id);
+
+            result = pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = -1;
+        } finally {
+            DBManager.close(con, pstmt);
+        }
+
+        return result;
+    }
 }

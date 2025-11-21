@@ -41,6 +41,8 @@ public class ActionFactory {
             action = new JoinFormAction();
         } else if (command.equals("join")) {
             action = new JoinAction();
+        } else if (command.equals("id_check")) {
+            action = new IdCheckAction();
         } else if (command.equals("update")) {
             action = new UpdateAction();
         }
@@ -69,6 +71,8 @@ public class ActionFactory {
             action = new MemberListAction();
         } else if (command.equals("member_detail")) {
             action = new MemberDetailAction();
+        } else if (command.equals("member_delete")) {
+            action = new MemberDeleteAction();
         } else if (command.equals("board_manage_list")) {
             action = new BoardManageListAction();
         } else if (command.equals("board_manage_delete")) {

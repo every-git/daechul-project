@@ -1,260 +1,1061 @@
-/* 기본 스타일 */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f5f5f5;
+/* ============================================
+   Naver-Style Modern Theme for Board Project
+   네이버 스타일 게시판 프로젝트
+   ============================================ */
+
+/* 네이버 컬러 변수 */
+:root {
+    /* 네이버 메인 컬러 */
+    --naver-green: #03C75A;
+    --naver-green-dark: #02B350;
+    --naver-green-light: #E8F8F0;
+    
+    /* 기본 컬러 */
+    --primary: #03C75A;
+    --primary-hover: #02B350;
+    --primary-light: #E8F8F0;
+    
+    --secondary: #1EC800;
+    --info: #4A90E2;
+    --success: #03C75A;
+    --warning: #FFA500;
+    --danger: #FF4747;
+    
+    /* 배경 컬러 */
+    --bg-body: #F7F9FA;
+    --bg-card: #FFFFFF;
+    --bg-input: #FFFFFF;
+    --bg-hover: #F5F5F5;
+    
+    /* 텍스트 컬러 */
+    --text-primary: #222222;
+    --text-secondary: #666666;
+    --text-muted: #999999;
+    --text-white: #FFFFFF;
+    
+    /* 보더 컬러 */
+    --border-light: #E5E5E5;
+    --border-medium: #CCCCCC;
+    --border-dark: #999999;
+    
+    /* 그림자 */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    
+    /* 둥근 모서리 */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
 }
 
-.container {
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    line-height: 1.6;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography */
+h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    line-height: 1.3;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    line-height: 1.3;
+}
+
+h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    line-height: 1.4;
+}
+
+a {
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+a:hover {
+    color: var(--primary);
+}
+
+/* Header - 네이버 스타일 헤더 */
+.header {
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header .container {
     max-width: 1200px;
     margin: 0 auto;
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-h1,
-h2,
-h3 {
-    color: #333;
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
 }
 
-/* 메뉴 스타일 */
-.menu {
-    margin: 20px 0;
-}
-
-.menu a {
-    display: inline-block;
-    padding: 10px 20px;
-    margin-right: 10px;
-    background-color: #4CAF50;
-    color: white;
+.header h1 a {
+    color: var(--naver-green);
     text-decoration: none;
-    border-radius: 3px;
 }
 
-.menu a:hover {
-    background-color: #45a049;
+.header h1 a:hover {
+    color: var(--naver-green-dark);
 }
 
-/* 폼 스타일 */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 14px;
+}
+
+.user-info span {
+    color: var(--text-secondary);
+}
+
+.user-info a {
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+}
+
+.user-info a:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.badge-admin {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: var(--naver-green);
+    color: var(--text-white);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+/* Navigation - 네이버 스타일 네비게이션 */
+.navbar {
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.navbar .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    gap: 8px;
+}
+
+.navbar a {
+    display: block;
+    padding: 14px 20px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 15px;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.navbar a:hover,
+.navbar a.active {
+    color: var(--naver-green);
+    border-bottom-color: var(--naver-green);
+}
+
+/* Footer */
+.footer {
+    background-color: var(--bg-card);
+    border-top: 1px solid var(--border-light);
+    margin-top: 60px;
+    padding: 32px 24px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.footer p {
+    margin: 4px 0;
+}
+
+/* Container */
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 24px;
+}
+
+/* 메인 컨테이너 - 카드형 */
+body > .container,
+body .container {
+    background-color: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+
+/* 타이틀 중앙정렬 */
+.container > h1,
+.container > h2 {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border-light);
+    margin-bottom: 32px;
+}
+
+/* Forms - 네이버 스타일 */
+form {
+    max-width: 480px;
+    margin: 0 auto;
+}
+
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .form-group label {
-    display: inline-block;
-    width: 120px;
-    font-weight: bold;
+    display: block;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
 }
 
 .form-group input[type="text"],
 .form-group input[type="password"],
 .form-group input[type="email"],
-.form-group textarea {
-    width: 300px;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 3px;
+.form-group input[type="tel"],
+.form-group textarea,
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="tel"],
+textarea {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+    font-family: inherit;
 }
 
-.form-group textarea {
-    width: 500px;
+.form-group input:focus,
+.form-group textarea:focus,
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--naver-green);
+    box-shadow: 0 0 0 3px var(--naver-green-light);
 }
 
-.form-group button {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
+.form-group textarea,
+textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.form-group small {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* Buttons - 네이버 스타일 */
+button,
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
     border: none;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
     cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    line-height: 1.5;
 }
 
-.form-group button:hover {
-    background-color: #45a049;
+button[type="submit"],
+.btn-primary {
+    width: 100%;
+    background-color: var(--naver-green);
+    color: var(--text-white);
 }
 
-/* 테이블 스타일 */
-.board-table,
+button[type="submit"]:hover,
+.btn-primary:hover {
+    background-color: var(--naver-green-dark);
+    color: var(--text-white);
+}
+
+button[type="button"],
+.btn-secondary {
+    background-color: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-medium);
+}
+
+button[type="button"]:hover,
+.btn-secondary:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--border-dark);
+}
+
+.form-group button[type="button"] {
+    width: auto;
+    padding: 10px 20px;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+/* Links & Menu - 중앙정렬 */
+.links,
+.menu {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border-light);
+}
+
+.links a,
+.menu a {
+    display: inline-block;
+    padding: 10px 24px;
+    background-color: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.links a:hover,
+.menu a:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--border-dark);
+}
+
+/* Board Header - 글쓰기 버튼 */
+.board-header {
+    text-align: right;
+    margin-bottom: 20px;
+    padding: 16px 0;
+}
+
+.board-header a {
+    display: inline-block;
+    padding: 12px 32px;
+    background-color: var(--naver-green);
+    color: var(--text-white);
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+}
+
+.board-header a:hover {
+    background-color: var(--naver-green-dark);
+    color: var(--text-white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Board List - 네이버 카페 스타일 */
+.board-list {
+    margin-top: 20px;
+}
+
+.board-item {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-light);
+    transition: all 0.2s ease;
+}
+
+.board-item:hover {
+    background-color: var(--bg-hover);
+    margin: 0 -16px;
+    padding: 20px 16px;
+}
+
+.board-title {
+    margin-bottom: 8px;
+}
+
+.board-title a {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.5;
+    display: inline-block;
+}
+
+.board-title a:hover {
+    color: var(--naver-green);
+}
+
+.board-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.board-writer {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.board-separator {
+    color: var(--border-medium);
+}
+
+.board-date,
+.board-hit {
+    color: var(--text-secondary);
+}
+
+.board-empty {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-muted);
+    font-size: 15px;
+}
+
+/* Board View - 상세보기 */
+.board-view {
+    margin-top: 24px;
+}
+
+.board-view-header {
+    margin-bottom: 24px;
+}
+
+.board-view-header h2 {
+    text-align: center;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--border-light);
+}
+
+.board-view-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border-light);
+    line-height: 1.4;
+}
+
+.board-view-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background-color: var(--bg-hover);
+    border-radius: var(--radius-sm);
+}
+
+.meta-item .icon {
+    font-size: 20px;
+}
+
+.meta-item label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    min-width: 60px;
+}
+
+.meta-item span {
+    font-size: 14px;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.board-content-wrapper {
+    padding: 32px 0;
+}
+
+.board-content {
+    min-height: 200px;
+    padding: 24px;
+    background-color: var(--bg-hover);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 15px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Action Buttons */
+.action-buttons,
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border-light);
+}
+
+.action-buttons a,
+.button-group a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 28px;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    gap: 6px;
+}
+
+.btn-edit,
+.action-buttons a:first-child {
+    background-color: var(--info);
+    color: var(--text-white);
+}
+
+.btn-edit:hover,
+.action-buttons a:first-child:hover {
+    background-color: #3A7BC8;
+    color: var(--text-white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-delete {
+    background-color: var(--danger);
+    color: var(--text-white);
+}
+
+.btn-delete:hover {
+    background-color: #E63946;
+    color: var(--text-white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-list {
+    background-color: var(--text-secondary);
+    color: var(--text-white);
+}
+
+.btn-list:hover {
+    background-color: var(--text-primary);
+    color: var(--text-white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* View Row */
+.view-row {
+    display: flex;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.view-row:last-child {
+    border-bottom: none;
+}
+
+.view-row label {
+    width: 120px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.view-row span {
+    color: var(--text-primary);
+    font-size: 14px;
+    flex: 1;
+}
+
+.view-content {
+    margin-top: 24px;
+    padding: 24px;
+    background-color: var(--bg-hover);
+    border-radius: var(--radius-md);
+    min-height: 150px;
+    white-space: pre-wrap;
+    line-height: 1.8;
+}
+
+.view-content label {
+    display: block;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+/* Admin Tables - 네이버 스타일 테이블 */
 .admin-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
+    margin-top: 24px;
+    background-color: var(--bg-card);
 }
 
-.board-table th,
-.board-table td,
-.admin-table th,
-.admin-table td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: center;
-}
-
-.board-table th,
 .admin-table th {
-    background-color: #4CAF50;
-    color: white;
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 14px 12px;
+    text-align: center;
+    border-bottom: 2px solid var(--border-medium);
 }
 
-.board-table tr:hover,
-.admin-table tr:hover {
-    background-color: #f5f5f5;
+.admin-table td {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--border-light);
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-primary);
 }
 
-/* 링크 스타일 */
-.links {
-    margin-top: 20px;
+.admin-table td:nth-child(2) {
+    text-align: left;
 }
 
-.links a {
-    display: inline-block;
-    padding: 8px 15px;
-    margin-right: 10px;
-    background-color: #2196F3;
-    color: white;
-    text-decoration: none;
-    border-radius: 3px;
+.admin-table tr:hover td {
+    background-color: var(--bg-hover);
 }
 
-.links a:hover {
-    background-color: #0b7dda;
+.admin-table tr:last-child td {
+    border-bottom: none;
 }
 
-/* 버튼 그룹 */
-.button-group {
-    margin-top: 20px;
+.admin-table a {
+    color: var(--naver-green);
+    font-weight: 500;
 }
 
-.button-group a {
-    display: inline-block;
-    padding: 8px 15px;
-    margin-right: 10px;
-    background-color: #f44336;
-    color: white;
-    text-decoration: none;
-    border-radius: 3px;
+.admin-table a:hover {
+    text-decoration: underline;
 }
 
-.button-group a:hover {
-    background-color: #da190b;
-}
-
-/* 관리자 메뉴 */
+/* Admin Menu */
 .admin-menu {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 5px;
-    margin: 20px 0;
+    background-color: var(--bg-hover);
+    padding: 32px;
+    border-radius: var(--radius-md);
+    margin-bottom: 32px;
+}
+
+.admin-menu h3 {
+    text-align: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--border-medium);
 }
 
 .admin-menu ul {
     list-style: none;
-    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
 }
 
-.admin-menu li {
-    margin: 10px 0;
-}
-
-.admin-menu a {
-    color: #4CAF50;
-    text-decoration: none;
-    font-size: 16px;
-}
-
-.admin-menu a:hover {
-    text-decoration: underline;
-}
-
-/* 헤더 스타일 */
-.header {
-    background-color: #4CAF50;
-    color: white;
-    padding: 15px 0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.header h1 {
-    margin: 0;
-    display: inline-block;
-}
-
-.header h1 a {
-    color: white;
-    text-decoration: none;
-}
-
-.header .user-info {
-    float: right;
-    margin-top: 10px;
-}
-
-.header .user-info a {
-    color: white;
-    margin-left: 15px;
-    text-decoration: none;
-}
-
-.header .user-info a:hover {
-    text-decoration: underline;
-}
-
-.badge-admin {
-    background-color: #dc3545;
-    padding: 2px 8px;
-    border-radius: 3px;
-    font-size: 12px;
-    margin-left: 5px;
-}
-
-/* 네비게이션 바 */
-.navbar {
-    background-color: #333;
-    padding: 10px 0;
-}
-
-.navbar a {
-    color: white;
-    padding: 10px 20px;
-    text-decoration: none;
-    display: inline-block;
-}
-
-.navbar a:hover {
-    background-color: #555;
-}
-
-/* 푸터 스타일 */
-.footer {
-    background-color: #333;
-    color: white;
+.admin-menu li a {
+    display: block;
+    padding: 20px;
+    background-color: var(--bg-card);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 15px;
     text-align: center;
-    padding: 20px 0;
-    margin-top: 50px;
+    border: 2px solid var(--border-light);
+    transition: all 0.2s ease;
 }
 
-.footer p {
-    margin: 5px 0;
+.admin-menu li a:hover {
+    border-color: var(--naver-green);
+    color: var(--naver-green);
+    background-color: var(--naver-green-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
-/* 버튼 공통 스타일 */
-.button {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 5px;
-    background-color: #4CAF50;
-    color: white;
-    text-decoration: none;
-    border-radius: 3px;
-    border: none;
+/* Member Detail */
+.member-detail {
+    margin: 32px 0;
+}
+
+.member-detail .view-row {
+    padding: 16px 24px;
+}
+
+/* Radio & Checkbox */
+input[type="radio"],
+input[type="checkbox"] {
+    accent-color: var(--naver-green);
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
     cursor: pointer;
 }
 
-.button:hover {
-    background-color: #45a049;
+input[type="radio"] + label,
+input[type="checkbox"] + label {
+    display: inline-block;
+    margin-right: 20px;
+    cursor: pointer;
+    font-weight: 400;
+    color: var(--text-primary);
+}
+
+.form-group label input[type="radio"],
+.form-group label input[type="checkbox"] {
+    margin-left: 12px;
+}
+
+/* Read Only */
+.read-only {
+    display: inline-block;
+    padding: 12px 16px;
+    background-color: var(--bg-hover);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-light);
+    font-size: 15px;
+    min-width: 200px;
+}
+
+/* Validation Messages */
+#password_match,
+#password_mismatch,
+#id_check_status {
+    display: block;
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#password_match {
+    color: var(--success);
+}
+
+#password_mismatch {
+    color: var(--danger);
+}
+
+#id_check_status {
+    color: var(--info);
+}
+
+/* Alerts & Messages */
+.alert {
+    padding: 16px 20px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.alert-success {
+    background-color: var(--naver-green-light);
+    color: var(--naver-green-dark);
+    border: 1px solid var(--naver-green);
+}
+
+.alert-danger {
+    background-color: #FFE8E8;
+    color: var(--danger);
+    border: 1px solid var(--danger);
+}
+
+.alert-info {
+    background-color: #E8F4FD;
+    color: var(--info);
+    border: 1px solid var(--info);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        font-size: 13px;
+    }
+
+    .header .container {
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px 16px;
+    }
+
+    .header h1 {
+        font-size: 20px;
+    }
+
+    .navbar .container {
+        padding: 0 16px;
+    }
+
+    .navbar a {
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+
+    .container {
+        padding: 24px 16px;
+        margin-top: 16px;
+        margin-bottom: 16px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    h3 {
+        font-size: 16px;
+    }
+
+    form {
+        max-width: 100%;
+    }
+
+    .links,
+    .menu {
+        flex-direction: column;
+    }
+
+    .links a,
+    .menu a {
+        width: 100%;
+        text-align: center;
+    }
+
+    .board-header {
+        text-align: center;
+    }
+
+    .board-item {
+        padding: 16px 0;
+    }
+
+    .board-item:hover {
+        margin: 0 -12px;
+        padding: 16px 12px;
+    }
+
+    .board-title a {
+        font-size: 15px;
+    }
+
+    .board-meta {
+        font-size: 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .board-view-title {
+        font-size: 20px;
+        padding: 20px 0;
+    }
+
+    .board-view-meta {
+        grid-template-columns: 1fr;
+    }
+
+    .action-buttons,
+    .button-group {
+        flex-direction: column;
+    }
+
+    .action-buttons a,
+    .button-group a {
+        width: 100%;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 12px 8px;
+        font-size: 13px;
+    }
+
+    .admin-menu {
+        padding: 20px;
+    }
+
+    .admin-menu ul {
+        grid-template-columns: 1fr;
+    }
+
+    .view-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .view-row label {
+        width: 100%;
+    }
+
+    .member-detail .view-row {
+        padding: 16px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header .container {
+        padding: 12px;
+    }
+
+    .navbar .container {
+        padding: 0 12px;
+    }
+
+    .container {
+        padding: 20px 12px;
+    }
+
+    button,
+    .btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .board-content,
+    .view-content {
+        padding: 16px;
+        font-size: 14px;
+    }
+}
+
+/* Utility Classes */
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mt-3 { margin-top: 24px; }
+.mt-4 { margin-top: 32px; }
+
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.mb-3 { margin-bottom: 24px; }
+.mb-4 { margin-bottom: 32px; }
+
+.p-1 { padding: 8px; }
+.p-2 { padding: 16px; }
+.p-3 { padding: 24px; }
+.p-4 { padding: 32px; }
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Print Styles */
+@media print {
+    .header,
+    .navbar,
+    .footer,
+    .board-header,
+    .action-buttons,
+    .button-group,
+    .links,
+    .menu {
+        display: none;
+    }
+
+    body {
+        background-color: white;
+    }
+
+    .container {
+        box-shadow: none;
+        padding: 0;
+    }
 }

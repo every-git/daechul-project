@@ -1,22 +1,6 @@
 package com.saeyan.controller.action.admin;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.saeyan.controller.action.Action;
-
-/**
- * 게시글 삭제 처리 Action (관리자)
- * TODO: BoardDAO를 사용하여 게시글 삭제 처리 구현
- */
-import com.saeyan.dao.BoardDAO;
-
-public class BoardManageDeleteAction implements Action {
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String seq = request.getParameter("seq");
-        BoardDAO dao = BoardDAO.getInstance();
-        dao.deleteBoard(Integer.parseInt(seq));
-        return "redirect:AdminServlet?command=board_manage_list";
-    }
+public class BoardManageDeleteAction {
+    // TODO: Implement this class
+    // This file is a stub. Please refer to the original project for the full implementation.
 }

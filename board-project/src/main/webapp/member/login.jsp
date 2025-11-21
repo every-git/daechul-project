@@ -1,24 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>로그인</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 - 대철이제철 게시판</title>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
 </head>
 <body>
     <div class="container">
         <h2>로그인</h2>
         
-        <form action="../MemberServlet?command=login" method="post">
+        <form action="<%= request.getContextPath() %>/MemberServlet?command=login" method="post">
             <div class="form-group">
-                <label>아이디:</label>
-                <input type="text" name="id" required>
+                <label for="id">아이디</label>
+                <input type="text" id="id" name="id" placeholder="아이디를 입력하세요" required autofocus>
             </div>
             
             <div class="form-group">
-                <label>비밀번호:</label>
-                <input type="password" name="password" required>
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
             </div>
             
             <div class="form-group">
@@ -27,8 +28,8 @@
         </form>
         
         <div class="links">
-            <a href="../MemberServlet?command=join_form">회원가입</a>
-            <a href="../index.jsp">메인으로</a>
+            <a href="<%= request.getContextPath() %>/MemberServlet?command=join_form">회원가입</a>
+            <a href="<%= request.getContextPath() %>/index.jsp">메인으로</a>
         </div>
     </div>
 </body>

@@ -1,26 +1,30 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
 </head>
 <body>
+    <%
+        String userId = (String) session.getAttribute("userId");
+        String userName = (String) session.getAttribute("userName");
+        String userRole = (String) session.getAttribute("userRole");
+    %>
+    
+    <!-- Header -->
     <div class="header">
         <div class="container">
-            <h1><a href="<%= request.getContextPath() %>/index.jsp">게시판 프로젝트</a></h1>
+            <h1><a href="<%= request.getContextPath() %>/index.jsp">대철이제철 게시판</a></h1>
             <div class="user-info">
                 <%
-                    String userId = (String) session.getAttribute("userId");
-                    String userName = (String) session.getAttribute("userName");
-                    String userRole = (String) session.getAttribute("userRole");
-                    
                     if (userId != null) {
                 %>
                     <span>
-                        <%= userName %>님 
+                        <%= userName %>님
                         <% if ("ADMIN".equals(userRole)) { %>
-                            <span class="badge-admin">[관리자]</span>
+                            <span class="badge-admin">관리자</span>
                         <% } %>
                     </span>
                     <a href="<%= request.getContextPath() %>/MemberServlet?command=logout">로그아웃</a>
@@ -35,6 +39,8 @@
             </div>
         </div>
     </div>
+    
+    <!-- Navigation -->
     <nav class="navbar">
         <div class="container">
             <a href="<%= request.getContextPath() %>/index.jsp">홈</a>
