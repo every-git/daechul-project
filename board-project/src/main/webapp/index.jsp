@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>게시판 프로젝트</h1>
+        <h1>대철이제철 게시판 프로젝트</h1>
         <h2>환영합니다!</h2>
         
         <div class="menu">

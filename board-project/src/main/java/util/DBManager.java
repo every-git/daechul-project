@@ -31,7 +31,7 @@ public class DBManager {
             // 연결 정보
             // characterEncoding=UTF-8&useUnicode=true: 한글 인코딩 처리
             con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/edudb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&useUnicode=true",
+                    "jdbc:mysql://localhost:3306/dcproject?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&useUnicode=true",
                     "jdbctest",
                     "1234");
         } catch (Exception e) {
