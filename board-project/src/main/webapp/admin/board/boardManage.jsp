@@ -31,7 +31,7 @@
                         <td>${board.regdate}</td>
                         <td>${board.hit}</td>
                         <td>
-                            <a href="../../AdminServlet?command=board_manage_update&amp;seq=${board.seq}">수정</a>
+                            <a href="../../BoardServlet?command=board_update_form&amp;seq=${board.seq}">수정</a>
                             <a href="../../AdminServlet?command=board_manage_delete&amp;seq=${board.seq}" 
                                onclick="return confirm('삭제하시겠습니까?')">삭제</a>
                         </td>
