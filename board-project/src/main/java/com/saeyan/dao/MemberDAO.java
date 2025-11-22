@@ -37,9 +37,17 @@ public class MemberDAO {
     }
 
     /**
-     * 모든 회원 목록 조회
+     * 모든 회원 목록을 조회하는 메서드 (관리자용)
      * 
-     * @return 회원 목록, 조회 실패 시 빈 리스트
+     * 처리 과정:
+     * 1. DBManager를 통해 데이터베이스 연결 획득
+     * 2. "select * from members order by regdate desc" SQL 실행 (최신 가입순 정렬)
+     * 3. ResultSet을 순회하며 각 행을 MemberVO 객체로 변환
+     * 4. 변환된 MemberVO 객체들을 List에 추가
+     * 5. 모든 자원(Connection, PreparedStatement, ResultSet) 반납
+     * 
+     * @return 회원 목록 (List<MemberVO>), 조회 실패 시 빈 리스트 반환
+     *         - 정렬: 가입일(regdate) 내림차순 (최신 가입자가 먼저)
      */
     public List<MemberVO> selectAllMembers() {
         Connection con = null;
@@ -75,11 +83,24 @@ public class MemberDAO {
     }
 
     /**
-     * 로그인 인증 - 아이디와 비밀번호 확인
+     * 로그인 인증 메서드 - 아이디와 비밀번호 확인
      * 
-     * @param id       회원 아이디
-     * @param password 비밀번호
-     * @return 1: 로그인 성공, 0: 실패 (아이디 없음 또는 비밀번호 불일치), -1: DB 오류
+     * 처리 과정:
+     * 1. DBManager를 통해 데이터베이스 연결 획득
+     * 2. "select password from members where id = ?" SQL 실행
+     * 3. PreparedStatement에 아이디(id) 설정
+     * 4. ResultSet에서 비밀번호 조회
+     * 5. 입력된 비밀번호와 DB의 비밀번호 비교
+     * 6. 모든 자원(Connection, PreparedStatement, ResultSet) 반납
+     * 
+     * 반환값 설명:
+     * - 1: 로그인 성공 (아이디 존재하고 비밀번호 일치)
+     * - 0: 로그인 실패 (아이디 없음 또는 비밀번호 불일치)
+     * - -1: DB 오류 (연결 실패 또는 예외 발생)
+     * 
+     * @param id       로그인 시도한 회원 아이디
+     * @param password 로그인 시도한 비밀번호
+     * @return 인증 결과 (1: 성공, 0: 실패, -1: 오류)
      */
     public int userCheck(String id, String password) {
         int result = -1; // 기본값: DB 오류
@@ -120,10 +141,22 @@ public class MemberDAO {
     }
 
     /**
-     * 아이디로 회원 정보 조회
+     * 아이디로 회원 정보를 조회하는 메서드
+     * 
+     * 처리 과정:
+     * 1. DBManager를 통해 데이터베이스 연결 획득
+     * 2. "select * from members where id = ?" SQL 실행
+     * 3. PreparedStatement에 아이디(id) 설정
+     * 4. ResultSet에서 조회된 데이터를 MemberVO 객체로 변환
+     * 5. 모든 자원(Connection, PreparedStatement, ResultSet) 반납
+     * 
+     * 사용 시점:
+     * - 로그인 성공 후 회원 정보를 세션에 저장할 때
+     * - 회원 상세 정보를 조회할 때
      * 
      * @param id 조회할 회원의 아이디
-     * @return MemberVO 객체 (회원 정보가 없으면 null)
+     * @return MemberVO 객체 (회원 정보가 담김)
+     *         - 회원이 존재하지 않으면 null 반환
      */
     public MemberVO getMember(String id) {
         MemberVO member = null;
@@ -163,10 +196,25 @@ public class MemberDAO {
     }
 
     /**
-     * 아이디 중복 확인
+     * 아이디 중복 확인 메서드
+     * 
+     * 처리 과정:
+     * 1. DBManager를 통해 데이터베이스 연결 획득
+     * 2. "select id from members where id = ?" SQL 실행
+     * 3. PreparedStatement에 확인할 아이디(id) 설정
+     * 4. ResultSet에서 조회 결과 확인
+     * 5. 모든 자원(Connection, PreparedStatement, ResultSet) 반납
+     * 
+     * 반환값 설명:
+     * - 1: 중복 (해당 아이디가 이미 존재함)
+     * - 0: 사용 가능 (해당 아이디가 존재하지 않음)
+     * - -1: DB 오류 (연결 실패 또는 예외 발생)
+     * 
+     * 사용 시점:
+     * - 회원가입 시 아이디 중복 체크
      * 
      * @param id 확인할 아이디
-     * @return 1: 중복 (이미 존재), 0: 사용 가능, -1: DB 오류
+     * @return 중복 확인 결과 (1: 중복, 0: 사용가능, -1: 오류)
      */
     public int confirmID(String id) {
         int result = -1;
@@ -198,10 +246,26 @@ public class MemberDAO {
     }
 
     /**
-     * 회원가입 - 새 회원 정보 등록
+     * 회원가입 메서드 - 새 회원 정보를 데이터베이스에 등록
      * 
-     * @param member 회원 정보
-     * @return 1: 성공, 0: 실패, -1: DB 오류
+     * 처리 과정:
+     * 1. DBManager를 통해 데이터베이스 연결 획득
+     * 2. "insert into members (id, password, name, email, role, phone) values (?, ?, ?, ?, ?, ?)" SQL 실행
+     * 3. PreparedStatement에 회원 정보(id, password, name, email, role, phone) 설정
+     * 4. executeUpdate()로 INSERT 쿼리 실행
+     * 5. 모든 자원(Connection, PreparedStatement) 반납
+     * 
+     * 반환값 설명:
+     * - 1: 회원가입 성공
+     * - 0: 회원가입 실패 (영향받은 행이 없음)
+     * - -1: DB 오류 (연결 실패 또는 예외 발생)
+     * 
+     * 주의사항:
+     * - regdate(가입일)는 현재 시간으로 자동 설정됨
+     * - role은 기본값 "MEMBER" 또는 "ADMIN"으로 설정됨
+     * 
+     * @param member 등록할 회원 정보가 담긴 MemberVO 객체 (id, password, name, email, role, phone 필수)
+     * @return 회원가입 결과 (1: 성공, 0: 실패, -1: 오류)
      */
     public int insertMember(MemberVO member) {
         int result = -1;
@@ -237,10 +301,26 @@ public class MemberDAO {
     }
 
     /**
-     * 회원 정보 수정
+     * 회원 정보 수정 메서드
      * 
-     * @param member 수정할 회원 정보
-     * @return 1: 성공, 0: 실패, -1: DB 오류
+     * 처리 과정:
+     * 1. DBManager를 통해 데이터베이스 연결 획득
+     * 2. "update members set password=?, email=?, phone=? where id=?" SQL 실행
+     * 3. PreparedStatement에 수정할 정보(password, email, phone, id) 설정
+     * 4. executeUpdate()로 UPDATE 쿼리 실행
+     * 5. 모든 자원(Connection, PreparedStatement) 반납
+     * 
+     * 반환값 설명:
+     * - 1: 수정 성공
+     * - 0: 수정 실패 (해당 아이디의 회원이 없거나 변경사항 없음)
+     * - -1: DB 오류 (연결 실패 또는 예외 발생)
+     * 
+     * 주의사항:
+     * - 비밀번호(password), 이메일(email), 전화번호(phone)만 수정 가능
+     * - 아이디(id), 이름(name), 역할(role), 가입일(regdate)은 수정되지 않음
+     * 
+     * @param member 수정할 회원 정보가 담긴 MemberVO 객체 (id, password, email, phone 필수)
+     * @return 수정 결과 (1: 성공, 0: 실패, -1: 오류)
      */
     public int updateMember(MemberVO member) {
         int result = -1;
@@ -269,10 +349,27 @@ public class MemberDAO {
     }
 
     /**
-     * 회원 삭제 (강제 탈퇴)
+     * 회원 삭제 메서드 (관리자용 - 강제 탈퇴)
+     * 
+     * 처리 과정:
+     * 1. DBManager를 통해 데이터베이스 연결 획득
+     * 2. "delete from members where id = ?" SQL 실행
+     * 3. PreparedStatement에 삭제할 회원 아이디(id) 설정
+     * 4. executeUpdate()로 DELETE 쿼리 실행
+     * 5. 모든 자원(Connection, PreparedStatement) 반납
+     * 
+     * 반환값 설명:
+     * - 1: 삭제 성공
+     * - 0: 삭제 실패 (해당 아이디의 회원이 없음)
+     * - -1: DB 오류 (연결 실패 또는 예외 발생)
+     * 
+     * 주의사항:
+     * - 물리적 삭제(실제 DB에서 레코드 삭제)
+     * - 삭제된 회원 정보는 복구 불가능
+     * - 관리자 자신은 삭제할 수 없도록 체크 필요 (Action에서 처리)
      * 
      * @param id 삭제할 회원의 아이디
-     * @return 1: 성공, 0: 실패, -1: DB 오류
+     * @return 삭제 결과 (1: 성공, 0: 실패, -1: 오류)
      */
     public int deleteMember(String id) {
         int result = -1;
