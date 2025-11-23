@@ -1,5 +1,8 @@
 package com.saeyan.controller.action.admin;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.saeyan.controller.action.Action;
@@ -22,24 +25,74 @@ public class MemberDeleteAction implements Action {
      * 
      * @param request HttpServletRequest 객체 (id 파라미터 필요)
      * @param response HttpServletResponse 객체
-     * @return 이동할 페이지 경로
-     *         - 아이디 없음: "/admin/member/memberList.jsp" (message 속성에 "회원 아이디가 없습니다." 저장)
-     *         - 자기 자신 삭제 시도: "/admin/member/memberList.jsp" (message 속성에 "자기 자신은 삭제할 수 없습니다." 저장)
-     *         - 삭제 성공: "redirect:" + request.getContextPath() + "/AdminServlet?command=member_list"
-     *         - 삭제 실패: "/admin/member/memberList.jsp" (message 속성에 "회원 삭제에 실패했습니다." 저장)
-     * @throws Exception 예외 발생 시
+     * @throws ServletException 서블릿 예외 발생 시
+     * @throws IOException 입출력 예외 발생 시
      */
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO: Implement this class
-        // 1. request.getParameter("id")로 회원 아이디 받기
-        // 2. 아이디가 null이거나 isEmpty()면 에러 메시지와 함께 "/admin/member/memberList.jsp" 반환
-        // 3. HttpSession session = request.getSession()
-        // 4. String currentUserId = (String) session.getAttribute("userId")
-        // 5. id.equals(currentUserId)면 "자기 자신은 삭제할 수 없습니다." 메시지와 함께 "/admin/member/memberList.jsp" 반환
-        // 6. MemberDAO.getInstance().deleteMember(id) 호출 (반환값: 1=성공, 0=실패)
-        // 7. 성공하면 "redirect:" + request.getContextPath() + "/AdminServlet?command=member_list" 반환
-        // 8. 실패하면 에러 메시지와 함께 "/admin/member/memberList.jsp" 반환
-        return null;
+        // 
+        // 처리 순서:
+        // 1. 기본 이동 경로 설정 (에러 발생 시 포워드할 페이지)
+        //    - String url = "/admin/member/memberList.jsp"
+        // 
+        // 2. request에서 회원 아이디 파라미터 추출
+        //    - 클라이언트가 전송한 파라미터 중 "id" 값을 가져옴
+        //    - 예: /AdminServlet?command=member_delete&id=user123
+        //    - String id = request.getParameter("id")
+        // 
+        // 3. 파라미터 유효성 검사
+        //    - 아이디가 null이거나 공백인 경우 에러 처리
+        //    - trim(): 앞뒤 공백 제거
+        //    - isEmpty(): 문자열이 비어있는지 확인
+        //    - if (id == null || id.trim().isEmpty()) {
+        //        - request.setAttribute("message", "회원 아이디가 없습니다.")
+        //        - MemberDAO를 통해 회원 목록 조회하여 request에 저장
+        //        - request.getRequestDispatcher(url).forward(request, response) (포워드 방식)
+        //        - return (메서드 종료)
+        //      }
+        // 
+        // 4. 세션에서 현재 로그인한 사용자 정보 확인
+        //    - getSession(): 현재 세션 객체를 가져옴 (없으면 새로 생성)
+        //    - 세션: 서버에 저장되는 사용자별 정보 (로그인 상태 유지)
+        //    - javax.servlet.http.HttpSession session = request.getSession()
+        //    - 세션에 저장된 사용자 아이디 가져오기
+        //    - 로그인 시 세션에 "userId"라는 이름으로 저장됨
+        //    - Object 타입으로 반환되므로 String으로 형변환 필요
+        //    - String currentUserId = (String) session.getAttribute("userId")
+        // 
+        // 5. 자기 자신 삭제 방지 체크
+        //    - 관리자가 실수로 자신의 계정을 삭제하는 것을 방지
+        //    - equals(): 문자열 내용 비교 (==는 주소 비교이므로 사용 불가)
+        //    - if (id.equals(currentUserId)) {
+        //        - request.setAttribute("message", "자기 자신은 삭제할 수 없습니다.")
+        //        - MemberDAO를 통해 회원 목록 조회하여 request에 저장
+        //        - request.getRequestDispatcher(url).forward(request, response) (포워드 방식)
+        //        - return (메서드 종료)
+        //      }
+        // 
+        // 6. MemberDAO를 통해 회원 삭제 처리
+        //    - Singleton 패턴으로 구현된 DAO 클래스
+        //    - com.saeyan.dao.MemberDAO memberDAO = com.saeyan.dao.MemberDAO.getInstance()
+        //    - deleteMember(id) 메서드 호출하여 데이터베이스에서 회원 삭제
+        //    - 반환값: 1 (성공) 또는 0 (실패)
+        //    - SQL의 DELETE 문 실행 결과 (영향받은 행의 개수)
+        //    - int result = memberDAO.deleteMember(id)
+        // 
+        // 7. 삭제 결과에 따른 처리
+        //    - if (result == 1) {
+        //        - 삭제 성공 시 리다이렉트 방식으로 회원 목록 페이지로 이동
+        //        - 리다이렉트: 브라우저가 새로운 URL로 요청 (URL 변경됨)
+        //        - getContextPath(): 웹 애플리케이션의 컨텍스트 경로 (예: /board-project)
+        //        - url = request.getContextPath() + "/AdminServlet?command=member_list"
+        //        - sendRedirect(): 브라우저에게 새로운 URL로 요청하도록 지시
+        //        - response.sendRedirect(url)
+        //      } else {
+        //        - 삭제 실패 시 에러 메시지 저장
+        //        - request.setAttribute("message", "회원 삭제에 실패했습니다.")
+        //        - 회원 목록을 다시 조회하여 화면에 표시
+        //        - request.setAttribute("memberList", memberDAO.selectAllMembers())
+        //        - request.getRequestDispatcher(url).forward(request, response) (포워드 방식)
+        //      }
     }
 }

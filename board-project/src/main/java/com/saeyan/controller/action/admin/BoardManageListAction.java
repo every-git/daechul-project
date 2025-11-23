@@ -1,5 +1,8 @@
 package com.saeyan.controller.action.admin;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.saeyan.controller.action.Action;
@@ -19,16 +22,36 @@ public class BoardManageListAction implements Action {
      * 
      * @param request HttpServletRequest 객체
      * @param response HttpServletResponse 객체
-     * @return 이동할 페이지 경로: "/admin/board/boardManage.jsp"
-     * @throws Exception 예외 발생 시
+     * @throws ServletException 서블릿 예외 발생 시
+     * @throws IOException 입출력 예외 발생 시
      */
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO: Implement this class
-        // 1. BoardDAO.getInstance()로 DAO 인스턴스 얻기
-        // 2. selectAllBoards() 메서드로 게시글 목록 조회
-        // 3. request.setAttribute("boardList", 조회결과)로 저장
-        // 4. "/admin/board/boardManage.jsp" 반환 (forward)
-        return null;
+        // 
+        // 처리 순서:
+        // 1. 이동할 페이지 경로 설정 (포워드 방식)
+        //    - String url = "/admin/board/boardManage.jsp"
+        // 
+        // 2. BoardDAO 인스턴스 얻기
+        //    - Singleton 패턴으로 구현된 DAO 클래스
+        //    - getInstance() 메서드를 통해 유일한 인스턴스를 반환받음
+        //    - com.saeyan.dao.BoardDAO boardDAO = com.saeyan.dao.BoardDAO.getInstance()
+        // 
+        // 3. 모든 게시글 목록 조회
+        //    - selectAllBoards() 메서드를 통해 데이터베이스에서 전체 게시글 정보를 조회
+        //    - 반환 타입: List<BoardVO>
+        //    - java.util.List<com.saeyan.dto.BoardVO> boardList = boardDAO.selectAllBoards()
+        // 
+        // 4. 조회한 게시글 목록을 request에 저장
+        //    - setAttribute() 메서드를 통해 JSP에서 사용할 수 있도록 데이터 저장
+        //    - 첫 번째 파라미터: 속성 이름 (JSP에서 ${boardList}로 접근 가능)
+        //    - 두 번째 파라미터: 저장할 객체
+        //    - request.setAttribute("boardList", boardList)
+        // 
+        // 5. 포워드 방식으로 페이지 이동
+        //    - getRequestDispatcher(): RequestDispatcher 객체를 얻어서 포워드 처리
+        //    - forward(): 실제로 페이지 이동 수행
+        //    - request.getRequestDispatcher(url).forward(request, response)
     }
 }

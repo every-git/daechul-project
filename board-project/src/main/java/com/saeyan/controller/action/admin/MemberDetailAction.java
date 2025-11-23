@@ -1,5 +1,8 @@
 package com.saeyan.controller.action.admin;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.saeyan.controller.action.Action;
@@ -20,17 +23,41 @@ public class MemberDetailAction implements Action {
      * 
      * @param request HttpServletRequest 객체 (id 파라미터 필요)
      * @param response HttpServletResponse 객체
-     * @return 이동할 페이지 경로: "/admin/member/memberDetail.jsp"
-     * @throws Exception 예외 발생 시
+     * @throws ServletException 서블릿 예외 발생 시
+     * @throws IOException 입출력 예외 발생 시
      */
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO: Implement this class
-        // 1. request.getParameter("id")로 회원 아이디 받기
-        // 2. MemberDAO.getInstance()로 DAO 인스턴스 얻기
-        // 3. getMember(id) 메서드로 회원 정보 조회
-        // 4. request.setAttribute("member", 조회결과)로 저장
-        // 5. "/admin/member/memberDetail.jsp" 반환 (forward)
-        return null;
+        // 
+        // 처리 순서:
+        // 1. 이동할 페이지 경로 설정 (포워드 방식)
+        //    - String url = "/admin/member/memberDetail.jsp"
+        // 
+        // 2. request에서 회원 아이디 파라미터 추출
+        //    - 클라이언트가 전송한 파라미터 중 "id" 값을 가져옴
+        //    - 예: /AdminServlet?command=member_detail&id=user123
+        //    - String id = request.getParameter("id")
+        // 
+        // 3. MemberDAO 인스턴스 얻기
+        //    - Singleton 패턴으로 구현된 DAO 클래스
+        //    - getInstance() 메서드를 통해 유일한 인스턴스를 반환받음
+        //    - com.saeyan.dao.MemberDAO memberDAO = com.saeyan.dao.MemberDAO.getInstance()
+        // 
+        // 4. 특정 회원 정보 조회
+        //    - getMember(id) 메서드를 통해 데이터베이스에서 해당 아이디의 회원 정보를 조회
+        //    - 반환 타입: MemberVO (회원 정보를 담는 DTO 객체)
+        //    - com.saeyan.dto.MemberVO member = memberDAO.getMember(id)
+        // 
+        // 5. 조회한 회원 정보를 request에 저장
+        //    - setAttribute() 메서드를 통해 JSP에서 사용할 수 있도록 데이터 저장
+        //    - 첫 번째 파라미터: 속성 이름 (JSP에서 ${member}로 접근 가능)
+        //    - 두 번째 파라미터: 저장할 객체
+        //    - request.setAttribute("member", member)
+        // 
+        // 6. 포워드 방식으로 페이지 이동
+        //    - getRequestDispatcher(): RequestDispatcher 객체를 얻어서 포워드 처리
+        //    - forward(): 실제로 페이지 이동 수행
+        //    - request.getRequestDispatcher(url).forward(request, response)
     }
 }
