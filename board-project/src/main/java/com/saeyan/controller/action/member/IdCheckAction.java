@@ -40,7 +40,7 @@ public class IdCheckAction implements Action {
     	// 3. 파라미터 유효성 검사
     	if (id == null || id.trim().isEmpty()) {
     		request.setAttribute("message", "아이디를 입력해주세요.");
-    		request.setAttribute("result", -1);
+    		request.setAttribute("result", 1);
     		request.getRequestDispatcher(url)
     			.forward(request, response);
     		return;

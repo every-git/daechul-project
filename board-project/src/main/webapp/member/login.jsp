@@ -32,5 +32,17 @@
             <a href="<%= request.getContextPath() %>/index.jsp">메인으로</a>
         </div>
     </div>
+    
+    <script>
+    <%
+    	String message = (String)session.getAttribute("message");
+    	if(message != null) {
+    %>
+    		alert("<%= message %>");
+    <%
+    		session.removeAttribute("message");
+    	}
+    %>
+    </script>
 </body>
 </html>
