@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.saeyan.controller.action.Action;
+import com.saeyan.dao.BoardDAO;
 
 /**
  * 게시글 삭제 처리 Action (관리자)
@@ -58,5 +59,15 @@ public class BoardManageDeleteAction implements Action {
         //    - String url = request.getContextPath() + "/AdminServlet?command=board_manage_list"
         //    - sendRedirect(): 브라우저에게 새로운 URL로 요청하도록 지시
         //    - response.sendRedirect(url)
+    	
+    	int seq = Integer.parseInt(request.getParameter("seq"));
+    	
+    	BoardDAO dao = BoardDAO.getInstance();
+    	dao.deleteBoard(seq);
+    	
+    	response.sendRedirect("/admin/board/boardManage.jsp");
+    	
+    
+    	
     }
 }

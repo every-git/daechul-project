@@ -1,0 +1,72 @@
+package com.saeyan.controller.action.admin;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import com.saeyan.controller.action.Action;
+import com.saeyan.dao.BoardDAO;
+
+/**
+ * 게시글 삭제 처리 Action (관리자)
+ */
+public class BoardManageDeleteAction implements Action {
+
+    /**
+     * 게시글 삭제 요청을 처리하는 메서드 (관리자용)
+     * 
+     * 처리 순서:
+     * 1. request에서 게시글 번호(seq) 파라미터 받기
+     * 2. BoardDAO를 통해 게시글 삭제 (deleteBoard)
+     * 3. 게시글 관리 목록 페이지로 리다이렉트
+     * 
+     * 주의: 관리자용이므로 권한 체크 없이 바로 삭제 처리합니다.
+     * 
+     * @param request HttpServletRequest 객체 (seq 파라미터 필요)
+     * @param response HttpServletResponse 객체
+     * @throws ServletException 서블릿 예외 발생 시
+     * @throws IOException 입출력 예외 발생 시
+     */
+    @Override
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // TODO: Implement this class
+        // 
+        // 처리 순서:
+        // 1. request에서 게시글 번호 파라미터 추출 및 변환
+        //    - 클라이언트가 전송한 파라미터 중 "seq" 값을 가져옴
+        //    - 예: /AdminServlet?command=board_manage_delete&seq=123
+        //    - String seqStr = request.getParameter("seq")
+        //    - 파라미터를 정수형으로 변환
+        //    - parseInt(): 문자열을 int 타입으로 변환
+        //    - NumberFormatException 발생 가능 (잘못된 형식의 문자열인 경우)
+        //    - int seq = Integer.parseInt(seqStr)
+        // 
+        // 2. BoardDAO 인스턴스 얻기
+        //    - Singleton 패턴으로 구현된 DAO 클래스
+        //    - getInstance() 메서드를 통해 유일한 인스턴스를 반환받음
+        //    - com.saeyan.dao.BoardDAO boardDAO = com.saeyan.dao.BoardDAO.getInstance()
+        // 
+        // 3. 게시글 삭제 처리
+        //    - deleteBoard(seq) 메서드를 통해 데이터베이스에서 해당 게시글을 삭제
+        //    - 관리자용이므로 권한 체크 없이 바로 삭제 처리
+        //    - SQL의 DELETE 문 실행
+        //    - boardDAO.deleteBoard(seq)
+        // 
+        // 4. 삭제 성공 후 리다이렉트 방식으로 게시글 관리 목록 페이지로 이동
+        //    - 리다이렉트: 브라우저가 새로운 URL로 요청 (URL 변경됨)
+        //    - getContextPath(): 웹 애플리케이션의 컨텍스트 경로 (예: /board-project)
+        //    - String url = request.getContextPath() + "/AdminServlet?command=board_manage_list"
+        //    - sendRedirect(): 브라우저에게 새로운 URL로 요청하도록 지시
+        //    - response.sendRedirect(url)
+    	
+    	int seq = Integer.parseInt(request.getParameter("seq"));
+    	
+    	BoardDAO dao = BoardDAO.getInstance();
+    	dao.deleteBoard(seq);
+    	
+    	
+    
+    	
+    }
+}

@@ -1,0 +1,16 @@
+127.0.0.1 - - [24/Nov/2025:10:23:21 +0900] "GET / HTTP/1.1" 404 808
+0:0:0:0:0:0:0:1 - - [24/Nov/2025:10:23:22 +0900] "GET /board-project/ HTTP/1.1" 200 3357
+0:0:0:0:0:0:0:1 - - [24/Nov/2025:10:23:22 +0900] "GET /board-project/css/style.css HTTP/1.1" 200 20663
+0:0:0:0:0:0:0:1 - - [24/Nov/2025:10:23:22 +0900] "GET /favicon.ico HTTP/1.1" 404 819
+127.0.0.1 - - [24/Nov/2025:11:08:05 +0900] "GET / HTTP/1.1" 404 808
+0:0:0:0:0:0:0:1 - - [24/Nov/2025:11:08:06 +0900] "GET /board-project/admin/member/memberDetail.jsp HTTP/1.1" 302 -
+0:0:0:0:0:0:0:1 - - [24/Nov/2025:11:08:07 +0900] "GET /board-project/member/login.jsp HTTP/1.1" 200 1306
+0:0:0:0:0:0:0:1 - - [24/Nov/2025:11:08:07 +0900] "GET /board-project/css/style.css HTTP/1.1" 304 -
+127.0.0.1 - - [24/Nov/2025:12:32:50 +0900] "GET / HTTP/1.1" 404 808
+0:0:0:0:0:0:0:1 - - [24/Nov/2025:12:32:50 +0900] "GET /board-project/ HTTP/1.1" 200 3357
+0:0:0:0:0:0:0:1 - - [24/Nov/2025:12:32:50 +0900] "GET /board-project/css/style.css HTTP/1.1" 304 -
+0:0:0:0:0:0:0:1 - - [24/Nov/2025:12:32:59 +0900] "GET /board-project/MemberServlet?command=join_form HTTP/1.1" 200 -
+0:0:0:0:0:0:0:1 - - [24/Nov/2025:12:33:02 +0900] "GET /board-project/BoardServlet?command=board_list HTTP/1.1" 200 -
+0:0:0:0:0:0:0:1 - - [24/Nov/2025:12:33:05 +0900] "GET /board-project/MemberServlet?command=login_form HTTP/1.1" 200 -
+0:0:0:0:0:0:0:1 - - [24/Nov/2025:12:38:23 +0900] "GET /board-project/ HTTP/1.1" 200 3357
+0:0:0:0:0:0:0:1 - - [24/Nov/2025:12:38:37 +0900] "GET /board-project/MemberServlet?command=login_form HTTP/1.1" 200 -

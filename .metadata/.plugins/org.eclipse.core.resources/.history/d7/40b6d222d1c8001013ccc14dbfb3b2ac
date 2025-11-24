@@ -1,0 +1,400 @@
+package com.saeyan.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.saeyan.dto.MemberVO;
+import util.DBManager;
+
+/**
+ * 회원 데이터베이스 접근 객체 (Data Access Object)
+ * 
+ * 역할: 데이터베이스에서 회원 데이터를 조회, 추가, 수정하는 작업을 담당
+ * 
+ * 설계 패턴: 싱글톤 패턴
+ * - 인스턴스를 하나만 생성하여 재사용
+ * - 프로그램 전체에서 동일한 DAO 인스턴스를 사용하여 데이터 일관성 유지
+ */
+public class MemberDAO {
+
+    // 싱글톤 패턴: 클래스 로드 시 한 번만 인스턴스 생성
+    private static MemberDAO instance = new MemberDAO();
+
+    // 외부에서 인스턴스 생성 방지 (private 생성자)
+    private MemberDAO() {
+    }
+
+    /**
+     * 싱글톤 인스턴스 반환 메서드
+     * 
+     * @return MemberDAO의 유일한 인스턴스
+     */
+    public static MemberDAO getInstance() {
+        return instance;
+    }
+
+    /**
+     * 모든 회원 목록을 조회하는 메서드 (관리자용)
+     * 
+     * 처리 과정:
+     * 1. DBManager를 통해 데이터베이스 연결 획득
+     * 2. "select * from members order by regdate desc" SQL 실행 (최신 가입순 정렬)
+     * 3. ResultSet을 순회하며 각 행을 MemberVO 객체로 변환
+     * 4. 변환된 MemberVO 객체들을 List에 추가
+     * 5. 모든 자원(Connection, PreparedStatement, ResultSet) 반납
+     * 
+     * @return 회원 목록 (List<MemberVO>), 조회 실패 시 빈 리스트 반환
+     *         - 정렬: 가입일(regdate) 내림차순 (최신 가입자가 먼저)
+     */
+    public List<MemberVO> selectAllMembers() {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        String sql = "select * from members order by regdate desc";
+        List<MemberVO> list = new ArrayList<MemberVO>();
+
+        try {
+            con = DBManager.getConnection();
+            pstmt = con.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                MemberVO member = new MemberVO();
+                member.setId(rs.getString("id"));
+                member.setPassword(rs.getString("password"));
+                member.setName(rs.getString("name"));
+                member.setEmail(rs.getString("email"));
+                member.setRole(rs.getString("role"));
+                member.setPhone(rs.getString("phone"));
+                member.setRegdate(rs.getTimestamp("regdate"));
+                list.add(member);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager.close(con, pstmt, rs);
+        }
+
+        return list;
+    }
+
+    /**
+     * 로그인 인증 메서드 - 아이디와 비밀번호 확인
+     * 
+     * 처리 과정:
+     * 1. DBManager를 통해 데이터베이스 연결 획득
+     * 2. "select password from members where id = ?" SQL 실행
+     * 3. PreparedStatement에 아이디(id) 설정
+     * 4. ResultSet에서 비밀번호 조회
+     * 5. 입력된 비밀번호와 DB의 비밀번호 비교
+     * 6. 모든 자원(Connection, PreparedStatement, ResultSet) 반납
+     * 
+     * 반환값 설명:
+     * - 1: 로그인 성공 (아이디 존재하고 비밀번호 일치)
+     * - 0: 로그인 실패 (아이디 없음 또는 비밀번호 불일치)
+     * - -1: DB 오류 (연결 실패 또는 예외 발생)
+     * 
+     * @param id       로그인 시도한 회원 아이디
+     * @param password 로그인 시도한 비밀번호
+     * @return 인증 결과 (1: 성공, 0: 실패, -1: 오류)
+     */
+    public int userCheck(String id, String password) {
+        int result = -1; // 기본값: DB 오류
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBManager.getConnection();
+            if (con == null) {
+                return -1;
+            }
+
+            String sql = "select password from members where id = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, id);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                String dbPassword = rs.getString("password");
+                if (dbPassword != null && dbPassword.equals(password)) {
+                    result = 1; // 로그인 성공
+                } else {
+                    result = 0; // 비밀번호 불일치
+                }
+            } else {
+                result = 0; // 존재하지 않는 아이디
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = -1;
+        } finally {
+            DBManager.close(con, pstmt, rs);
+        }
+
+        return result;
+    }
+
+    /**
+     * 아이디로 회원 정보를 조회하는 메서드
+     * 
+     * 처리 과정:
+     * 1. DBManager를 통해 데이터베이스 연결 획득
+     * 2. "select * from members where id = ?" SQL 실행
+     * 3. PreparedStatement에 아이디(id) 설정
+     * 4. ResultSet에서 조회된 데이터를 MemberVO 객체로 변환
+     * 5. 모든 자원(Connection, PreparedStatement, ResultSet) 반납
+     * 
+     * 사용 시점:
+     * - 로그인 성공 후 회원 정보를 세션에 저장할 때
+     * - 회원 상세 정보를 조회할 때
+     * 
+     * @param id 조회할 회원의 아이디
+     * @return MemberVO 객체 (회원 정보가 담김)
+     *         - 회원이 존재하지 않으면 null 반환
+     */
+    public MemberVO getMember(String id) {
+        MemberVO member = null;
+        String sql = "select * from members where id = ?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBManager.getConnection();
+            if (con == null) {
+                return null;
+            }
+
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, id);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                member = new MemberVO();
+                member.setId(rs.getString("id"));
+                member.setPassword(rs.getString("password"));
+                member.setName(rs.getString("name"));
+                member.setEmail(rs.getString("email"));
+                member.setRole(rs.getString("role"));
+                member.setPhone(rs.getString("phone"));
+                member.setRegdate(rs.getTimestamp("regdate"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager.close(con, pstmt, rs);
+        }
+
+        return member;
+    }
+
+    /**
+     * 아이디 중복 확인 메서드
+     * 
+     * 처리 과정:
+     * 1. DBManager를 통해 데이터베이스 연결 획득
+     * 2. "select id from members where id = ?" SQL 실행
+     * 3. PreparedStatement에 확인할 아이디(id) 설정
+     * 4. ResultSet에서 조회 결과 확인
+     * 5. 모든 자원(Connection, PreparedStatement, ResultSet) 반납
+     * 
+     * 반환값 설명:
+     * - 1: 중복 (해당 아이디가 이미 존재함)
+     * - 0: 사용 가능 (해당 아이디가 존재하지 않음)
+     * - -1: DB 오류 (연결 실패 또는 예외 발생)
+     * 
+     * 사용 시점:
+     * - 회원가입 시 아이디 중복 체크
+     * 
+     * @param id 확인할 아이디
+     * @return 중복 확인 결과 (1: 중복, 0: 사용가능, -1: 오류)
+     */
+    public int confirmID(String id) {
+        int result = -1;
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBManager.getConnection();
+
+            String sql = "select id from members where id = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, id);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                result = 1; // 중복
+            } else {
+                result = 0; // 사용 가능
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager.close(con, pstmt, rs);
+        }
+
+        return result;
+    }
+
+    /**
+     * 회원가입 메서드 - 새 회원 정보를 데이터베이스에 등록
+     * 
+     * 처리 과정:
+     * 1. DBManager를 통해 데이터베이스 연결 획득
+     * 2. "insert into members (id, password, name, email, role, phone) values (?, ?, ?, ?, ?, ?)" SQL 실행
+     * 3. PreparedStatement에 회원 정보(id, password, name, email, role, phone) 설정
+     * 4. executeUpdate()로 INSERT 쿼리 실행
+     * 5. 모든 자원(Connection, PreparedStatement) 반납
+     * 
+     * 반환값 설명:
+     * - 1: 회원가입 성공
+     * - 0: 회원가입 실패 (영향받은 행이 없음)
+     * - -1: DB 오류 (연결 실패 또는 예외 발생)
+     * 
+     * 주의사항:
+     * - regdate(가입일)는 현재 시간으로 자동 설정됨
+     * - role은 기본값 "MEMBER" 또는 "ADMIN"으로 설정됨
+     * 
+     * @param member 등록할 회원 정보가 담긴 MemberVO 객체 (id, password, name, email, role, phone 필수)
+     * @return 회원가입 결과 (1: 성공, 0: 실패, -1: 오류)
+     */
+    public int insertMember(MemberVO member) {
+        int result = -1;
+
+        String sql = "insert into members (id, password, name, email, role, phone) " +
+                "values (?, ?, ?, ?, ?, ?)";
+        Connection con = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            con = DBManager.getConnection();
+            if (con == null) {
+                return -1;
+            }
+
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, member.getId());
+            pstmt.setString(2, member.getPassword());
+            pstmt.setString(3, member.getName());
+            pstmt.setString(4, member.getEmail());
+            pstmt.setString(5, member.getRole());
+            pstmt.setString(6, member.getPhone());
+
+            result = pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = -1;
+        } finally {
+            DBManager.close(con, pstmt);
+        }
+
+        return result;
+    }
+
+    /**
+     * 회원 정보 수정 메서드
+     * 
+     * 처리 과정:
+     * 1. DBManager를 통해 데이터베이스 연결 획득
+     * 2. "update members set password=?, email=?, phone=? where id=?" SQL 실행
+     * 3. PreparedStatement에 수정할 정보(password, email, phone, id) 설정
+     * 4. executeUpdate()로 UPDATE 쿼리 실행
+     * 5. 모든 자원(Connection, PreparedStatement) 반납
+     * 
+     * 반환값 설명:
+     * - 1: 수정 성공
+     * - 0: 수정 실패 (해당 아이디의 회원이 없거나 변경사항 없음)
+     * - -1: DB 오류 (연결 실패 또는 예외 발생)
+     * 
+     * 주의사항:
+     * - 비밀번호(password), 이메일(email), 전화번호(phone)만 수정 가능
+     * - 아이디(id), 이름(name), 역할(role), 가입일(regdate)은 수정되지 않음
+     * 
+     * @param member 수정할 회원 정보가 담긴 MemberVO 객체 (id, password, email, phone 필수)
+     * @return 수정 결과 (1: 성공, 0: 실패, -1: 오류)
+     */
+    public int updateMember(MemberVO member) {
+        int result = -1;
+
+        String sql = "update members set password=?, email=?, phone=? where id=?";
+        Connection con = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            con = DBManager.getConnection();
+
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, member.getPassword());
+            pstmt.setString(2, member.getEmail());
+            pstmt.setString(3, member.getPhone());
+            pstmt.setString(4, member.getId());
+
+            result = pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager.close(con, pstmt);
+        }
+
+        return result;
+    }
+
+    /**
+     * 회원 삭제 메서드 (관리자용 - 강제 탈퇴)
+     * 
+     * 처리 과정:
+     * 1. DBManager를 통해 데이터베이스 연결 획득
+     * 2. "delete from members where id = ?" SQL 실행
+     * 3. PreparedStatement에 삭제할 회원 아이디(id) 설정
+     * 4. executeUpdate()로 DELETE 쿼리 실행
+     * 5. 모든 자원(Connection, PreparedStatement) 반납
+     * 
+     * 반환값 설명:
+     * - 1: 삭제 성공
+     * - 0: 삭제 실패 (해당 아이디의 회원이 없음)
+     * - -1: DB 오류 (연결 실패 또는 예외 발생)
+     * 
+     * 주의사항:
+     * - 물리적 삭제(실제 DB에서 레코드 삭제)
+     * - 삭제된 회원 정보는 복구 불가능
+     * - 관리자 자신은 삭제할 수 없도록 체크 필요 (Action에서 처리)
+     * 
+     * @param id 삭제할 회원의 아이디
+     * @return 삭제 결과 (1: 성공, 0: 실패, -1: 오류)
+     */
+    public int deleteMember(String id) {
+        int result = -1;
+
+        String sql = "delete from members where id = ?";
+        Connection con = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            con = DBManager.getConnection();
+            if (con == null) {
+                return -1;
+            }
+
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, id);
+
+            result = pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = -1;
+        } finally {
+            DBManager.close(con, pstmt);
+        }
+
+        return result;
+    }
+}

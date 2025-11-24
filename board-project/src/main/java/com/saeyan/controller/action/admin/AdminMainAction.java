@@ -38,5 +38,15 @@ public class AdminMainAction implements Action {
         //    - getRequestDispatcher(): RequestDispatcher 객체를 얻어서 포워드 처리
         //    - forward(): 실제로 페이지 이동 수행
         //    - request.getRequestDispatcher(url).forward(request, response)
+    	
+    	String url = "/admin/adminMain.jsp";
+    	
+    	request.getRequestDispatcher(url).forward(request, response);
+    	
+    	
+    	
+    	
+    	
+    	
     }
 }
