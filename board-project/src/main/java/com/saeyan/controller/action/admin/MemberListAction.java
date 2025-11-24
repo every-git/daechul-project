@@ -1,11 +1,14 @@
 package com.saeyan.controller.action.admin;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.saeyan.controller.action.Action;
+import com.saeyan.dao.MemberDAO;
+import com.saeyan.dto.MemberVO;
 
 /**
  * 회원 목록 조회 Action
@@ -53,5 +56,15 @@ public class MemberListAction implements Action {
         //    - getRequestDispatcher(): RequestDispatcher 객체를 얻어서 포워드 처리
         //    - forward(): 실제로 페이지 이동 수행
         //    - request.getRequestDispatcher(url).forward(request, response)
+    	
+    	String url = "/admin/member/memberList.jsp";
+    	
+    	MemberDAO dao = MemberDAO.getInstance();
+    	List<MemberVO> list = dao.selectAllMembers();
+    	
+    	request.setAttribute("memberList", list);
+    	
+    	request.getRequestDispatcher(url).forward(request, response);
+
     }
 }

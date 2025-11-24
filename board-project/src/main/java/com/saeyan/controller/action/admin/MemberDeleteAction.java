@@ -5,7 +5,11 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import com.saeyan.controller.action.Action;
+import com.saeyan.dao.MemberDAO;
+import com.saeyan.dto.MemberVO;
 
 /**
  * 회원 삭제 처리 Action (관리자)
@@ -94,5 +98,38 @@ public class MemberDeleteAction implements Action {
         //        - request.setAttribute("memberList", memberDAO.selectAllMembers())
         //        - request.getRequestDispatcher(url).forward(request, response) (포워드 방식)
         //      }
+    	
+    	String url = "/admin/member/memberList.jsp";
+    	
+    	String id = request.getParameter("member");
+    
+    	if (id == null || id.trim().isEmpty()) {
+	         request.setAttribute("message", "회원 아이디가 없습니다.");
+	         request.getRequestDispatcher(url).forward(request, response);
+	      }else {
+	    	  MemberDAO dao = MemberDAO.getInstance();
+	          dao.deleteMember(id);
+	      }
+    	
+    	HttpSession session = request.getSession();
+    	String userId = (String) session.getAttribute("userId");
+
+    	if(id.equals(userId)) {
+    		request.setAttribute("massage", "관리자 본인은 삭제할 수 없습니다.");
+    		request.getRequestDispatcher(url).forward(request, response);
+    	}
+    		
+    	MemberDAO dao = MemberDAO.getInstance();
+    	int result = dao.deleteMember(id);
+    	
+    	if(result == 1) {
+    		response.sendRedirect(url);
+    	}else {
+    		request.setAttribute("massage", "회원 삭제에 실패했습니다.");
+    		request.setAttribute("memberList", dao.selectAllMembers());
+    		request.getRequestDispatcher(url).forward(request, response);
+    		
+    	}
+    	
     }
 }

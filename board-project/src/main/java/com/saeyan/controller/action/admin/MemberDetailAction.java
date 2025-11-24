@@ -6,6 +6,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.saeyan.controller.action.Action;
+import com.saeyan.dao.MemberDAO;
+import com.saeyan.dto.MemberVO;
 
 /**
  * 회원 상세 정보 조회 Action
@@ -59,5 +61,18 @@ public class MemberDetailAction implements Action {
         //    - getRequestDispatcher(): RequestDispatcher 객체를 얻어서 포워드 처리
         //    - forward(): 실제로 페이지 이동 수행
         //    - request.getRequestDispatcher(url).forward(request, response)
+    	
+    	String url = "/admin/member/memberDetail.jsp";
+    	
+    	String id = request.getParameter("member.id");
+    	
+    	MemberDAO dao = MemberDAO.getInstance();
+    	MemberVO member = dao.getMember(id);
+    	
+    	request.setAttribute("member", member);
+    	request.getRequestDispatcher(url).forward(request, response);
+    	
+    	
+    	
     }
 }
