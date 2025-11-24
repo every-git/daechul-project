@@ -15,22 +15,13 @@ import com.saeyan.controller.action.Action;
 public class MemberServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * GET 요청 처리 메서드
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doProcess(request, response);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doProcess(request, response);
-    }
-
-    private void doProcess(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
 
         String command = request.getParameter("command");
@@ -45,5 +36,15 @@ public class MemberServlet extends HttpServlet {
         if(action != null) {
             action.execute(request, response);
         }
+    }
+
+    /**
+     * POST 요청 처리 메서드
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        doGet(request, response);
     }
 }
