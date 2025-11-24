@@ -33,12 +33,9 @@ public class JoinAction implements Action {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)
     		throws ServletException, IOException {
-        // TODO: Implement this class
-        request.setCharacterEncoding("UTF-8");
-        // 처리 순서:
-        // 1. 요청 인코딩 설정
-        //    - 한글 처리를 위해 UTF-8 인코딩 설정
-        //    - request.setCharacterEncoding("UTF-8")
+    	
+        // 1. 요청 인코딩 설정 : 한글 처리를 위해 UTF-8 인코딩 설정
+    	request.setCharacterEncoding("UTF-8");
         // 
         // 2. request에서 회원 정보 파라미터 추출
         //    - 클라이언트가 전송한 파라미터 값들을 가져옴

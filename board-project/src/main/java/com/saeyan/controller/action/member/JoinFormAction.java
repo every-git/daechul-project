@@ -22,6 +22,6 @@ public class JoinFormAction implements Action {
 		request.getRequestDispatcher(url)
 			//forward(): 실제로 페이지 이동 수행
 			.forward(request, response);
-	
+
 	}
 }
