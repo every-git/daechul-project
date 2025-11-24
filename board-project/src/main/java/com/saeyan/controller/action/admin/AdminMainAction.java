@@ -25,7 +25,6 @@ public class AdminMainAction implements Action {
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO: Implement this class
         // 
         // 처리 순서:
         // 1. 관리자 메인 페이지 경로 설정
