@@ -31,9 +31,10 @@ public class JoinAction implements Action {
      * @throws IOException 입출력 예외 발생 시
      */
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void execute(HttpServletRequest request, HttpServletResponse response)
+    		throws ServletException, IOException {
         // TODO: Implement this class
-        // 
+        request.setCharacterEncoding("UTF-8");
         // 처리 순서:
         // 1. 요청 인코딩 설정
         //    - 한글 처리를 위해 UTF-8 인코딩 설정
