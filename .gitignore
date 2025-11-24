@@ -1,1 +1,21 @@
 /.metadata/
+Servers/
+.readme
+.SQL_설정_가이드
+.git_upload
+
+# --- 자바 컴파일 결과물 (소스코드가 아니므로 무시) ---
+*.class
+bin/
+build/
+
+# --- 이클립스 설정 파일 (충돌의 주범! 무시해야 함) ---
+.classpath
+.project
+.settings/
+
+# — 맥(Mac) 사용자가 흔히 만드는 시스템 파일 —
+.DS_Store
+
+# — 윈도우 썸네일 파일 —
+Thumbs.db
