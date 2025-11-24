@@ -72,7 +72,7 @@ public class JoinAction implements Action {
         // 6. MemberDAO를 통해 아이디 중복 확인
     	MemberDAO dao = MemberDAO.getInstance();
     	// 반환값: 1 (중복/사용불가) 또는 0 (사용가능)
-    	if(dao.confirmID(request.getParameter(id)) == 1) {
+    	//if(dao.confirmID(request.getParameter(id)) == 1) {
     		request.setAttribute("message", "이미 사용 중인 아이디입니다.");
     		String url = "/member/join.jsp";
     		request.getRequestDispatcher(url)
@@ -80,6 +80,55 @@ public class JoinAction implements Action {
     		return;   		
     	} 
     	
+    
+    
+
+        // 처리 순서:
+        // 1. 이동할 페이지 경로 설정 (포워드 방식)
+        //    - String url = "/member/idCheck.jsp"
+        // 
+        // 2. request에서 아이디 파라미터 추출
+        //    - 클라이언트가 전송한 파라미터 중 "id" 값을 가져옴
+        //    - String id = request.getParameter("id")
+        // 
+        // 3. 파라미터 유효성 검사
+        //    - 아이디가 null이거나 공백인 경우 에러 처리
+        //    - trim(): 앞뒤 공백 제거
+        //    - isEmpty(): 문자열이 비어있는지 확인
+        //    - if (id == null || id.trim().isEmpty()) {
+        //        - 에러 메시지를 request에 저장
+        //        - request.setAttribute("message", "아이디를 입력해주세요.")
+        //        - 결과 코드를 -1로 설정 (입력 오류)
+        //        - request.setAttribute("result", -1)
+        //        - 포워드 방식으로 아이디 중복 확인 페이지로 이동
+        //        - request.getRequestDispatcher(url).forward(request, response)
+        //        - return (메서드 종료)
+        //      }
+        // 
+        // 4. MemberDAO를 통해 아이디 중복 확인
+        //    - Singleton 패턴으로 구현된 DAO 클래스
+        //    - com.saeyan.dao.MemberDAO memberDAO = com.saeyan.dao.MemberDAO.getInstance()
+        //    - confirmID(id) 메서드를 통해 데이터베이스에서 아이디 중복 확인
+        //    - 반환값: 1 (중복/사용불가) 또는 0 (사용가능)
+        //    - int result = memberDAO.confirmID(id)
+        // 
+        // 5. 확인 결과를 request에 저장
+        //    - setAttribute() 메서드를 통해 JSP에서 사용할 수 있도록 데이터 저장
+        //    - request.setAttribute("id", id) (확인한 아이디)
+        //    - request.setAttribute("result", result) (중복 확인 결과)
+        // 
+        // 6. 포워드 방식으로 아이디 중복 확인 페이지로 이동
+        //    - getRequestDispatcher(): RequestDispatcher 객체를 얻어서 포워드 처리
+        //    - forward(): 실제로 페이지 이동 수행
+        //    - request.getRequestDispatcher(url).forward(request, response)
+    }
+}
+    
+    
+    
+    
+    
+    
     	
         //    - Singleton 패턴으로 구현된 DAO 클래스
         //    - com.saeyan.dao.MemberDAO memberDAO = com.saeyan.dao.MemberDAO.getInstance()
