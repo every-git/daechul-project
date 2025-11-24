@@ -6,10 +6,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.saeyan.controller.action.Action;
+import com.saeyan.dao.MemberDAO;
 
-/**
- * 회원가입 처리 Action
- */
 public class JoinAction implements Action {
 
     /**
@@ -25,62 +23,64 @@ public class JoinAction implements Action {
      * 7. MemberDAO를 통해 회원 등록 (insertMember)
      * 8. 성공 시 로그인 폼으로 리다이렉트, 실패 시 join.jsp로 포워드 (에러 메시지 포함)
      * 
-     * @param request HttpServletRequest 객체 (id, password, password_confirm, name, email, phone, role, admin_password 파라미터 필요)
-     * @param response HttpServletResponse 객체
-     * @throws ServletException 서블릿 예외 발생 시
-     * @throws IOException 입출력 예외 발생 시
-     */
+     * @param request HttpServletRequest 객체
+     *  (id, password, password_confirm, name, email, phone, role, admin_password 파라미터 필요)
+ */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)
     		throws ServletException, IOException {
     	
         // 1. 요청 인코딩 설정 : 한글 처리를 위해 UTF-8 인코딩 설정
     	request.setCharacterEncoding("UTF-8");
-        // 
+    	
         // 2. request에서 회원 정보 파라미터 추출
-        //    - 클라이언트가 전송한 파라미터 값들을 가져옴
-        //    - String id = request.getParameter("id")
-        //    - String password = request.getParameter("password")
-        //    - String passwordConfirm = request.getParameter("password_confirm")
-        //    - String name = request.getParameter("name")
-        //    - String email = request.getParameter("email")
-        //    - String phone = request.getParameter("phone")
-        //    - String role = request.getParameter("role")
-        //    - String adminPassword = request.getParameter("admin_password")
-        // 
-        // 3. 비밀번호 일치 확인
-        //    - equals(): 문자열 내용 비교 (==는 주소 비교이므로 사용 불가)
-        //    - if (!password.equals(passwordConfirm)) {
-        //        - 에러 메시지를 request에 저장
-        //        - request.setAttribute("message", "비밀번호가 일치하지 않습니다.")
-        //        - 포워드 방식으로 회원가입 페이지로 이동
-        //        - String url = "/member/join.jsp"
-        //        - request.getRequestDispatcher(url).forward(request, response)
-        //        - return (메서드 종료)
-        //      }
-        // 
-        // 4. 관리자 가입인 경우 관리자 비밀번호 확인
-        //    - equalsIgnoreCase(): 대소문자 구분 없이 문자열 비교
-        //    - if ("ADMIN".equalsIgnoreCase(role)) {
-        //        - 관리자 비밀번호가 "9876"인지 확인
-        //        - if (!"9876".equals(adminPassword)) {
-        //            - 에러 메시지를 request에 저장
-        //            - request.setAttribute("message", "관리자 비밀번호가 일치하지 않습니다.")
-        //            - 포워드 방식으로 회원가입 페이지로 이동
-        //            - String url = "/member/join.jsp"
-        //            - request.getRequestDispatcher(url).forward(request, response)
-        //            - return (메서드 종료)
-        //          }
-        //      }
-        // 
+    	String id = request.getParameter("id");
+    	String password = request.getParameter("password");
+    	String passwordConfirm = request.getParameter("password_confirm");
+    	String name = request.getParameter("name");
+    	String email = request.getParameter("email");
+    	String role = request.getParameter("role");
+    	String phone = request.getParameter("phone");
+    	String adminPassword = request.getParameter("admin_password");
+    	
+    	// 3. 비밀번호 일치 확인
+    	if (!password.equals("password_confirm")) {
+    		request.setAttribute("message", "비밀번호가 일치하지 않습니다.");
+    		String url = "/member/join.jsp";
+    		request.getRequestDispatcher(url)
+    			.forward(request, response);
+    		return;
+    	}
+    	
+        // 4. 관리자로 가입하는 경우 관리자 비밀번호 확인 (관리자 비밀번호가 "9876"인지 확인)
+    	if ("ADMIN".equals(role)) {
+    		if(!"9876".equals(adminPassword)) {
+    			request.setAttribute("message", "관리자 비밀번호가 일치하지 않습니다.");
+    			String url = "/member/join.jsp";
+    			request.getRequestDispatcher(url)
+    				.forward(request, response);
+    			return;
+    		}
+    	}
+    	
         // 5. role이 null이면 MEMBER로 설정
-        //    - trim(): 앞뒤 공백 제거
-        //    - isEmpty(): 문자열이 비어있는지 확인
-        //    - if (role == null || role.trim().isEmpty()) {
-        //        - role = "MEMBER"
-        //      }
-        // 
+    	if (role == null || role.trim().isEmpty()) {
+    		role = "MEMBER";
+    	}
+
+
         // 6. MemberDAO를 통해 아이디 중복 확인
+    	MemberDAO dao = MemberDAO.getInstance();
+    	// 반환값: 1 (중복/사용불가) 또는 0 (사용가능)
+    	if(dao.confirmID(request.getParameter(id)) == 1) {
+    		request.setAttribute("message", "이미 사용 중인 아이디입니다.");
+    		String url = "/member/join.jsp";
+    		request.getRequestDispatcher(url)
+    			.forward(request, response);
+    		return;   		
+    	} 
+    	
+    	
         //    - Singleton 패턴으로 구현된 DAO 클래스
         //    - com.saeyan.dao.MemberDAO memberDAO = com.saeyan.dao.MemberDAO.getInstance()
         //    - confirmID(id) 메서드를 통해 데이터베이스에서 아이디 중복 확인
