@@ -38,7 +38,7 @@
             </div>
             
             <div class="form-group">
-                <button type="submit">등록</button>
+                <button type="submit" onclick="location.href='BoardServlet?command=board_write'">등록</button>
                 <button type="button" onclick="history.back()">취소</button>
             </div>
         </form>
