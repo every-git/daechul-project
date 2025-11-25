@@ -38,33 +38,43 @@ public class BoardDeleteAction implements Action {
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-       HttpSession session = request.getSession();
-       String userId = (String) session.getAttribute("userId");
+      
+    	//2  로그인 정보확인
+    	HttpSession session = request.getSession();
+    	String userId = (String) session.getAttribute("userId");
+    	String userRole = (String) session.getAttribute("userRole");
        
+    	//3. 되지 안을경우 리다이렉트
        if (userId == null) {
           String url = request.getContextPath() + "/index.jsp";
           response.sendRedirect(url);
-           return;
+          return;
        }
-        
-       String seqStr = request.getParameter("seq");
-              int seq = Integer.parseInt(seqStr);
-              
+      
+       		//1. 번호값 받기
+       		String seqStr = request.getParameter("seq");
+            int seq = Integer.parseInt(seqStr);
+       
+            //4,DAO를 통해 해당게시글 정보 조회
             BoardDAO boardDAO = BoardDAO.getInstance();
             BoardVO board = boardDAO.selectOneBySeq(seq);
-  
-              if (!userId.equals(board.getWriter()) && !"ADMIN".equalsIgnoreCase(userRole)) {
-               
-                   request.setAttribute("message", "삭제 권한이 없습니다.");
-                   request.setAttribute("board", board);
-                   String url = "/board/boardView.jsp";
-                   request.getRequestDispatcher(url).forward(request, response);
-                   return;
-                        }
-       
-                 boardDAO.deleteBoard(seq);
+           
+            //5권한 체크
+            if (!userId.equals(board.getWriter()) && !"ADMIN".equalsIgnoreCase(userRole)) {
+            
+            //6 권한이 없는경우   
+            request.setAttribute("message", "삭제 권한이 없습니다.");
+            request.setAttribute("board", board);
+            String url = "/board/boardView.jsp";
+            request.getRequestDispatcher(url).forward(request, response);
               
-                  response.sendRedirect("/BoardServlet?command=board_list");
+            return;   
+            }
+          	//7권한이 있는경우
+           	boardDAO.deleteBoard(seq);
+           	
+           	//8,계시글목록 페이지로 리 다이렉트
+           	response.sendRedirect("/BoardServlet?command=board_list");
       
     }
 }

@@ -37,50 +37,59 @@ public class BoardUpdateAction implements Action {
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-            request.setCharacterEncoding("UTF-8");
-            response.setContentType("text/html; charset=UTF-8");       
-   
-              HttpSession session = request.getSession();
-              String userId = (String) session.getAttribute("userId");
-              String userRole = (String) session.getAttribute("userRole");
-                
-              if (userId == null) {
-            	  String url = request.getContextPath() + "/index.jsp";
-            	  response.sendRedirect(url);
-            	  return;
-              }
-      
-                String seqStr = request.getParameter("seq");
-                int seq = Integer.parseInt(seqStr);
-                String title = request.getParameter("title");
-                String content = request.getParameter("content");
+            	//1.request.setCharacterEncoding(UTF=8)로 인코딩설정
+    			request.setCharacterEncoding("UTF-8");
+    			response.setContentType("text/html; charset=UTF-8");       
            
-        
+    			//3. 로그인 정보 확인
+    			
+    			HttpSession session = request.getSession();
+    			String userId = (String) session.getAttribute("userId");
+    			String userRole = (String) session.getAttribute("userRole");
+    			
+    			//4.로그인 되지 않을 경우  
+    			
+    			if (userId == null) {
+    				String url = request.getContextPath() + "/index.jsp";
+    				response.sendRedirect(url);
+    				return;
+    			}
+              		//2.request에서 번호 제목 내용 피라미터 받기
+    			
+                	String seqStr = request.getParameter("seq");
+                	int seq = Integer.parseInt(seqStr);
+                	String title = request.getParameter("title");
+                	String content = request.getParameter("content");
+           
+                	//5. BoardDAO를 통해 해당 게시글 정보 조회
          
-                BoardDAO boardDAO = BoardDAO.getInstance();
-                BoardVO board = boardDAO.selectOneBySeq(seq);
+                	BoardDAO boardDAO = BoardDAO.getInstance();
+                	BoardVO board = boardDAO.selectOneBySeq(seq);
         
-                
-                if (!userId.equals(board.getWriter()) && !"ADMIN".equalsIgnoreCase(userRole)) {
-                                       
+                	//6.  권한 체크: 작성자이거나 관리자(ADMIN)만 수정 가능
+               
+                	if (!userId.equals(board.getWriter()) && !"ADMIN".equalsIgnoreCase(userRole)) {
+               
+                	//7. 권한이 없는 경우: boardView.jsp로 포워드 (에러 메시지 포함) 
+                		
                     request.setAttribute("message", "수정 권한이 없습니다.");
-                    request.setAttribute("board", board);
+                    request.setAttribute("board", board);    
                     String url = "/board/boardView.jsp";
                     request.getRequestDispatcher(url).forward(request, response);
                     return;        
                 }
            
                                    
-                                          
+                //8.권한이 있는 경우: BoardVO 객체 생성하여 수정 정보 설정 후 updateBoard 호출  
+                	
                 BoardVO updateBoard = new BoardVO();
                 updateBoard.setSeq(seq);
                 updateBoard.setTitle(title);
-                updateBoard.setContent(content);
-                                                                  
+                updateBoard.setContent(content);                                                      
                                    
                 boardDAO.updateBoard(updateBoard);
            
-                                    
+              //  9. 게시글 상세보기 페이지로 리다이렉트                    
 
                 String url = request.getContextPath() + "/BoardServlet?command=board_view&seq=" + seq;
                 

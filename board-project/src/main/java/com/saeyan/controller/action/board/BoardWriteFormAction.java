@@ -32,16 +32,19 @@ public class BoardWriteFormAction implements Action {
         
     	
     	
-    
+    	// 1. 세션에서 로그인 정보 확인 (userId)
        String url = "/board/boardWrite.jsp";
        HttpSession session = request.getSession();
        String userId = (String) session.getAttribute("userId");
-    
-        if (userId == null) {
-         url = request.getContextPath() + "/index.jsp";
+       
+       //2. 로그인되지 않은 경우: index.jsp로 리다이렉트
+        if (userId == null) {  
          response.sendRedirect(url);
+         url = request.getContextPath() + "/index.jsp";
          return;
            }
+        
+        //3. 게시글 작성 폼 페이지(boardWrite.jsp)로 포워드
          request.getRequestDispatcher(url).forward(request, response);
     }
 }

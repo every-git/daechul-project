@@ -36,23 +36,22 @@ public class BoardListAction implements Action {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
     	String url = "/board/boardList.jsp";
-         
-        HttpSession session = request.getSession();
-         
-       String userId = (String) session.getAttribute("userId");
-        if (userId == null) {
+        //1.세션에 로그인 정보 확인 
+    	HttpSession session = request.getSession(); 
+    	String userId = (String) session.getAttribute("userId");
+        //2.로그인 되지 않을경우 index.jsp로 리다이렉트
+    	if (userId == null) {
         url = request.getContextPath() + "/index.jsp";
         response.sendRedirect(url);
         return;
         }
-       
+       //3.DAO를 통해  모든 게시글 목록조회
         BoardDAO boardDAO = BoardDAO.getInstance();{
      
-      
+      //4.조회한 게시글목록을 requst에 boardList라는 이름으로 저장
         List<BoardVO> boardList = boardDAO.selectAllBoards();
-       
-         request.setAttribute("boardList", boardList);
-      
+        request.setAttribute("boardList", boardList);
+      //5.boardList.jsp로 포워드
         request.getRequestDispatcher(url).forward(request, response);  
         }
     }

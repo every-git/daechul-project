@@ -40,35 +40,46 @@ public class BoardUpdateFormAction implements Action {
        
          String url = "/board/boardUpdate.jsp";
         
-         HttpSession session = request.getSession();
-         	String userId = (String) session.getAttribute("userId");
-         	String userRole = (String) session.getAttribute("userRole");
+         //2.세션에서 로그인 정보 확인 (userId, userRole)
          
-       
-         	if (userId == null) {
-         		url = request.getContextPath() + "/index.jsp";
-         		response.sendRedirect(url);
-         		return; 
-              }
-             	String seqStr = request.getParameter("seq");
-             	int seq = Integer.parseInt(seqStr);
+         HttpSession session = request.getSession();
+         String userId = (String) session.getAttribute("userId");
+         String userRole = (String) session.getAttribute("userRole");
+         
+         //3. 로그인되지 않은 경우: index.jsp로 리다이렉트
+         
+         if (userId == null) {
+        	 url = request.getContextPath() + "/index.jsp";
+        	 response.sendRedirect(url);
+        	 return; 
+         }
+         	
+         //1. request에서 게시글 번호(seq) 파라미터 받기
+         	
+         String seqStr = request.getParameter("seq");
+         int seq = Integer.parseInt(seqStr);
      
-   
-             	BoardDAO boardDAO = BoardDAO.getInstance();
-             	BoardVO board = boardDAO.selectOneBySeq(seq);
+         // 4. BoardDAO를 통해 해당 게시글 정보 조회
+         
+         BoardDAO boardDAO = BoardDAO.getInstance();
+         BoardVO board = boardDAO.selectOneBySeq(seq);
         
+         //5.권한 체크: 작성자이거나 관리자(ADMIN)만 수정 가능
         
-             	if (!userId.equals(board.getWriter()) && !"ADMIN".equalsIgnoreCase(userRole)) {
-             		request.setAttribute("message", "수정 권한이 없습니다.");
-             		request.setAttribute("board", board);
-             		url = "/board/boardView.jsp";
-             		request.getRequestDispatcher(url).forward(request, response);
-             		return;
-             	}
+         if (!userId.equals(board.getWriter()) && !"ADMIN".equalsIgnoreCase(userRole)) {
+        	 request.setAttribute("message", "수정 권한이 없습니다.");
+        	 request.setAttribute("board", board);
+        	 url = "/board/boardView.jsp";
+        	 request.getRequestDispatcher(url).forward(request, response);
+        	 return;
+         }
             
-      
+         //  6. 권한이 없는 경우: boardView.jsp로 포워드 (에러 메시지 포함)
+         
              	request.setAttribute("board", board);
-     
+             	
+             	//7.권한이 있는 경우: 게시글 정보를 request에 저장하고 boardUpdate.jsp로 포워드
+             	
              	request.getRequestDispatcher(url).forward(request, response);
     }
 	}
