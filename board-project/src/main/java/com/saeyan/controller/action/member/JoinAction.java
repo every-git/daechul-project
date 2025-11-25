@@ -76,6 +76,7 @@ public class JoinAction implements Action {
 		int result = dao.insertMember(vo);
 
 		if (result == 1) {
+			
 			HttpSession session = request.getSession();
 			session.setAttribute("message", "회원가입에 성공하였습니다.");
 			session.setAttribute("id", vo.getId());
