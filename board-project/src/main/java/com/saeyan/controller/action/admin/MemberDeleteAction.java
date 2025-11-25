@@ -101,7 +101,7 @@ public class MemberDeleteAction implements Action {
     	
     	String url = "/admin/member/memberList.jsp";
     	
-    	String id = request.getParameter("member");
+    	String id = request.getParameter("id");
     
     	if (id == null || id.trim().isEmpty()) {
 	         request.setAttribute("message", "회원 아이디가 없습니다.");
