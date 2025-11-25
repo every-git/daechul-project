@@ -64,7 +64,7 @@ public class MemberDetailAction implements Action {
     	
     	String url = "/admin/member/memberDetail.jsp";
     	
-    	String id = request.getParameter("member.id");
+    	String id = request.getParameter("id");
     	
     	MemberDAO dao = MemberDAO.getInstance();
     	MemberVO member = dao.getMember(id);

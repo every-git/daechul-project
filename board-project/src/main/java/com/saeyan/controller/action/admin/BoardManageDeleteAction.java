@@ -65,7 +65,9 @@ public class BoardManageDeleteAction implements Action {
     	BoardDAO dao = BoardDAO.getInstance();
     	dao.deleteBoard(seq);
     	
-    	response.sendRedirect("/admin/board/boardManage.jsp");
+    	//String url = request.getContextPath() + "/admin/board/boardManage.jsp";
+    	String url = request.getContextPath() + "/AdminServlet?command=board_manage_list";
+    	response.sendRedirect(url);
     	
     
     	
