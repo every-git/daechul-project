@@ -40,6 +40,7 @@ public class BoardDeleteAction implements Action {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
        HttpSession session = request.getSession();
        String userId = (String) session.getAttribute("userId");
+       String userRole = (String) session.getAttribute("userRole");
        
        if (userId == null) {
           String url = request.getContextPath() + "/index.jsp";
@@ -62,9 +63,9 @@ public class BoardDeleteAction implements Action {
                    return;
                         }
        
-                 boardDAO.deleteBoard(seq);
-              
-                  response.sendRedirect("/BoardServlet?command=board_list");
+                 	boardDAO.deleteBoard(seq);
+                 	String url = request.getContextPath() + "/BoardServlet?command=board_list";
+                 	response.sendRedirect(url);
       
     }
 }

@@ -40,7 +40,7 @@ public class BoardUpdateFormAction implements Action {
        
          String url = "/board/boardUpdate.jsp";
         
-         HttpSession session = request.getSession();
+         	HttpSession session = request.getSession();
          	String userId = (String) session.getAttribute("userId");
          	String userRole = (String) session.getAttribute("userRole");
          

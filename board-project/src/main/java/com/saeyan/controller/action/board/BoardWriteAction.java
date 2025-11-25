@@ -34,29 +34,35 @@ public class BoardWriteAction implements Action {
      * @throws IOException 입출력 예외 발생 시
      */
 
-	@SuppressWarnings("unused")
 	@Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	request.setCharacterEncoding("UTF-8");
-    	response.setContentType("text/html; charset=UTF-8");
-    		
+    	response.setContentType("text/html; charset=UTF-8"); 
+//	---------------------------------------------------	
         	HttpSession session = request.getSession();
         	String userId = (String) session.getAttribute("userId");
-        
+ // -*******************************    
       
       if (userId == null) {
          String url = request.getContextPath() + "/index.jsp";
          response.sendRedirect(url);
         return ;
               }
-       
+//----------------------------------------------------  
+      
                 String title = request.getParameter("title");
                 String content = request.getParameter("content");
+                String writer =  request.getParameter("writer");
+        //-----------------------------------------------------------        
                 BoardVO board = new BoardVO();
-     
-      
+                board.setTitle(title);
+                board.setContent(content);
+                board.setWriter(writer); 
+//     --------------------------------------------------------------------- 
                 BoardDAO boardDAO = BoardDAO.getInstance();
+              
                 boardDAO.insertBoard(board);
+                
                 String url = request.getContextPath() + "/BoardServlet?command=board_list";           
                 response.sendRedirect(url);
     }

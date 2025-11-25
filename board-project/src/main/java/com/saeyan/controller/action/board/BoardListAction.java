@@ -51,7 +51,7 @@ public class BoardListAction implements Action {
       
         List<BoardVO> boardList = boardDAO.selectAllBoards();
        
-         request.setAttribute("boardList", boardList);
+        request.setAttribute("boardList", boardList);
       
         request.getRequestDispatcher(url).forward(request, response);  
         }
