@@ -34,29 +34,39 @@ public class BoardWriteAction implements Action {
      * @throws IOException 입출력 예외 발생 시
      */
 
-	@SuppressWarnings("unused")
 	@Override
+	
+	
+	
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	request.setCharacterEncoding("UTF-8");
-    	response.setContentType("text/html; charset=UTF-8");
-    		
+		
+		//1. request.setCharacterEncoding("UTF-8")로 인코딩 설정
+		request.setCharacterEncoding("UTF-8");
+    	
+    	//2.세션에서 로그인 정보 확인 (userId)
+    	
         	HttpSession session = request.getSession();
         	String userId = (String) session.getAttribute("userId");
         
-      
-      if (userId == null) {
-         String url = request.getContextPath() + "/index.jsp";
-         response.sendRedirect(url);
-        return ;
+        //3. 로그인되지 않은 경우: index.jsp로 리다이렉트
+        	if (userId == null) {
+        		String url = request.getContextPath() + "/index.jsp";
+        		response.sendRedirect(url);
+        		return ;
               }
-       
+        	
+        //4.request에서 게시글 제목(title), 내용(content) 파라미터 받기
                 String title = request.getParameter("title");
                 String content = request.getParameter("content");
+         
+        //5. BoardVO 객체 생성하여 작성자(writer), 제목, 내용 설정
                 BoardVO board = new BoardVO();
      
-      
+        //6, BoardDAO를 통해 게시글 등록 (insertBoard)
                 BoardDAO boardDAO = BoardDAO.getInstance();
                 boardDAO.insertBoard(board);
+        
+         //7. 게시글 목록 페이지로 리다이렉트       
                 String url = request.getContextPath() + "/BoardServlet?command=board_list";           
                 response.sendRedirect(url);
     }
