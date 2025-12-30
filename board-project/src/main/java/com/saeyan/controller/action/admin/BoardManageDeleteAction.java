@@ -5,6 +5,8 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import com.saeyan.controller.action.Action;
 import com.saeyan.dao.BoardDAO;
 
@@ -69,6 +71,8 @@ public class BoardManageDeleteAction implements Action {
     	String url = request.getContextPath() + "/AdminServlet?command=board_manage_list";
     	response.sendRedirect(url);
     	
+    	HttpSession session = request.getSession();
+    	session.setAttribute(url, session);
     
     	
     }

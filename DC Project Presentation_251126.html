@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DC 프로젝트 발표</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .presentation-container {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .slide-display {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background-color: #0f172a;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            display: none;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slide-display.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem;
+        }
+        
+        /* 슬라이드 내용 스타일 */
+        .slide-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    
+        .scroll-text {
+            position: absolute;
+            left: -100%;
+            top: 35%;
+            transform: translateY(-50%);
+            white-space: nowrap;
+            font-size: 4rem;
+            color: #38bdf8;
+            font-weight: bold;
+            animation: scroll-horizontal 3s linear infinite, wave 3s ease-in-out infinite;
+            }
+            /* ▲ animation 속성의 8s를 원하는 시간으로 변경 가능 (작을수록 빠름) */
+            @keyframes scroll-horizontal {
+            0%     { left: 100%; }
+            100%   { left: -80%; }
+            }
+            @keyframes wave {
+            0%   { transform: translateY(0); }
+            10%  { transform: translateY(-14px); }
+            20%  { transform: translateY(0); }
+            30%  { transform: translateY(14px); }
+            40%  { transform: translateY(0); }
+            50%  { transform: translateY(-14px); }
+            60%  { transform: translateY(0); }
+            70%  { transform: translateY(14px); }
+            80%  { transform: translateY(0); }
+            90%  { transform: translateY(-14px); }
+            100% { transform: translateY(0); }
+}
+
+            .scroll-name {
+            position: absolute;
+            left: 50%;
+            top: 85%;
+            transform: translateX(-50%) translateY(-50%);
+            white-space: nowrap;
+            font-size: 1.5rem;
+            color: #b7d0da;
+            font-weight: bold;
+            animation: shimmer 2s ease-in-out infinite;
+            }
+            /* ▲ 반짝이는 애니메이션 */
+            @keyframes shimmer {
+            0%   { opacity: 1; }
+            50%  { opacity: 0.3; }
+            100% { opacity: 1; }
+            }
+        
+        .slide-content.col {
+            align-items: flex-start;
+        }
+
+        .slide-content.row {
+            flex-direction: row;
+            gap: 1.5rem;
+            justify-content: space-between;
+        }
+
+        /* 타이포그래피 */
+        h1 { font-size: 3.75rem; font-weight: 700; margin: 0; color: #38bdf8; }
+        h2 { font-size: 2.25rem; font-weight: 600; margin-bottom: 1.5rem; color: #38bdf8; }
+        h3 { font-size: 1.75rem; font-weight: 600; color: #38bdf8; }
+        h4 { font-size: 1.5rem; font-weight: 600; }
+
+        p {
+            font-size: 1.125rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+        .text-sm {
+            font-size: 1rem;
+            font-family: 'Montserrat', 'Fira Sans', 'Roboto', 'Segoe UI', 'Arial', sans-serif;
+            color: rgb(238, 238, 238);
+            margin-top: auto;
+            position: absolute;
+            bottom: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: 700;        /* (기본 bold=700, semi-bold=600) */
+            opacity: 0.2;            /* 투명도 60% -> 0.6 */
+        }
+        .text-sm-h {
+            font-size: 0.875rem;
+            color: #94a3b8;
+            margin-top: 1rem;
+        }
+
+        ul, ol {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: #cbd5e1;
+            margin-left: 1rem;
+            margin-top: 1rem;
+        }
+
+        li {
+            margin-left: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        /* 카드 스타일 */
+        .card {
+            background-color: #1e293b;
+            padding: 1.5rem;
+            border-radius: 8px;
+            flex: 1;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h3 {
+            margin-bottom: 1.5rem;
+        }
+
+        .card p {
+            margin-bottom: 0;
+        }
+
+         /* QR 코드 고정 위치 */
+        .qr-code-fixed {
+            position: absolute;
+            top: 100px;
+            right: 100px;
+            width: 150px;
+            height: 150px;
+            background-color: transparent;
+            border-radius: 8px;
+            padding: 0px;
+            box-shadow: none;
+            z-index: 1000;
+            mix-blend-mode: screen;
+        }
+
+        .qr-code-fixed img {
+            width: 100%;
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        /* 컨트롤 바 */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+
+        button {
+            background-color: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0284c7;
+            color: #f1f5f9;
+        }
+
+        button:disabled {
+            background-color: #334155;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            color: #cbd5e1;
+            font-size: 1rem;
+            font-weight: 600;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .fullscreen-btn {
+            background-color: #10b981;
+        }
+
+        .fullscreen-btn:hover {
+            background-color: #059669;
+        }
+
+        /* 풀스크린 모드 */
+        .slide-display.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            max-width: 100%;
+            border-radius: 0;
+            z-index: 9999;
+            margin: 0;
+            padding: 0;
+        }
+
+        .slide-display.fullscreen .slide-content {
+            padding: 4rem;
+        }
+
+        .exit-fullscreen {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 10px 20px;
+            font-size: 0.875rem;
+            border-radius: 6px;
+            cursor: pointer;
+            z-index: 10000;
+        }
+
+        .exit-fullscreen:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 정보 안내 */
+        .info {
+            color: #94a3b8;
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .info kbd {
+            background-color: #1e293b;
+            color: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+         /* 말풍선 스타일 */
+        .speech-bubble {
+            position: absolute;
+            left: -200px;
+            top: 90px;
+            width: 180px;
+            background-color: #ffffff;
+            color: #0f172a;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+        }
+
+        /* 말풍선 꼬리 */
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid #ffffff;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="slide-display active" id="slide-0">
+            <div class="slide-content center">
+                <div class="qr-code-fixed" style="background-color: transparent; padding: 0;"><div class="speech-bubble">802호에 놀러오세요~!</div>
+            <img src="https://qrcodethumb-phinf.pstatic.net/20251126_245/17641242758998yGLg_PNG/1WqsS.png" alt="게시판 QR 코드" style="filter: invert(1);"></div>
+                <h1 style="position: relative; height: 120px;">DC Project</h1>
+                <div class="slide-content center" style="position: relative; overflow: hidden;">
+                <span class="scroll-text">이야~~ 대철이 제철이다~~~~!!!!</span>
+                <div class="slide-content center" style="position: relative; overflow: hidden;">
+                <span class="scroll-name">정용준&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;선하영&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;오창준&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;최명헌</span>
+                <p class="text-sm">2025-11-26</p>
+            </div>
+        </div>
+        </div>
+        </div><!-- #slide-0 종료 -->
+
+
+
+ <div class="slide-display" id="slide-1">
+            <div class="slide-content col" style="width:100%; align-items:center;">
+                <h2 style="text-align:center; width:100%;">프로젝트 개요</h2>
+                <br><br>
+                <div style="display:flex; flex-direction:column; align-items:flex-start; width:100%; margin-bottom:2rem; gap:1rem;">
+                    <div style="display:flex; align-items:center; width:100%;">
+                        <span style="font-size:1.5rem; color:#38bdf8; font-weight:700; min-width:130px;">🎯 프로젝트 목표</span>
+                        <span style="margin-left:1.8rem; font-size:1.3rem; color:#cbd5e1; font-weight:600;">
+                            한 달간 습득한 Java·JSP·웹 개발 지식으로 실제 웹서비스를 구현하고, 협업과 Git 실무 경험 체득
+                        </span>
+                    </div>
+                                        
+                    <div style="display:flex; align-items:center; width:100%;">
+                        <span style="font-size:1.5rem; color:#38bdf8; font-weight:700; min-width:130px;">📌 프로젝트 목적</span>
+                        <span style="margin-left:1.8rem; font-size:1.3rem; color:#cbd5e1; font-weight:500;">
+                            회원 관리 및 관리자 기능이 포함된 웹 기반 게시판 시스템 개발
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 핵심 기능 박스 3개 grid-template-columns:repeat(3,1fr) -->
+                <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:2rem; width:95%; margin-bottom: 1.5rem;">
+                    <div style="background:#1e293b; border-left:4px solid #38bdf8; padding:1rem 1.2rem; border-radius:7px;">
+                        <h3 style="color:#38bdf8; font-size:1.15rem; margin-bottom:0.8rem;">회원 관리</h3>
+                        <ul style="font-size:0.98rem; color:#cbd5e1; margin-left:0;">
+                            <li>회원가입 · 로그인</li>
+                            <li>정보 수정 · 세션 인증</li>
+                            <li>권한(일반/관리자) 체크</li>
+                        </ul>
+                    </div>
+                    <div style="background:#1e293b; border-left:4px solid #10b981; padding:1rem 1.2rem; border-radius:7px;">
+                        <h3 style="color:#10b981; font-size:1.15rem; margin-bottom:0.8rem;">게시판 관리</h3>
+                        <ul style="font-size:0.98rem; color:#cbd5e1; margin-left:0;">
+                            <li>글 작성/조회/수정/삭제(CRUD)</li>
+                            <li>작성자 권한 체크</li>
+                            <li>관리자 전체 게시글 관리</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background:#1e293b; border-left:4px solid #ef4444; padding:1rem 1.2rem; border-radius:7px;">
+                        <h3 style="color:#ef4444; font-size:1.15rem; margin-bottom:0.8rem;">지속 개발중</h3>
+                        <ul style="font-size:0.98rem; color:#cbd5e1; margin-left:0;">
+                            <li>댓글 · 투표</li>
+                            <li>공지사항 · 좋아요</li>
+                            <li>마크다운 글쓰기 등</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; width:100%;">
+                        <span style="font-size:1.5rem; color:#94a3b8; font-weight:700; min-width:130px;">🗓️ 프로젝트 기간</span>
+                        <span style="margin-left:1.8rem; font-size:1.3rem; color:#cbd5e1; font-weight:530;">
+                            2025-11-24 (월) ~ 2025-11-26 (수)
+                        </span>
+                    </div>
+            </div>
+        </div><!-- #slide-1 종료 -->
+
+<div class="slide-display" id="slide-2">
+            <div class="slide-content col" style="justify-content:flex-start; padding-top:-10rem;">
+                <h2 style="margin-bottom:1rem;">팀 구성 및 폴더 구조</h2>
+                <!-- 👥 팀구성: 한줄 4명 박스 -->
+                <div style="width:100%; display:grid; grid-template-columns:repeat(4, 1fr); gap:0.8rem; margin-bottom:1.2rem;">
+                <div style="background:#1e293b; padding:1rem 0.7rem; border-radius:7px; text-align:center; font-weight:700; color:#38bdf8; font-size:1.12rem; box-shadow: 0 2px 8px rgba(0,0,0,0.12); border-left: 4px solid #38bdf8;">
+                    정용준<br>
+                    <span style="font-size:0.93rem; font-weight:500; color:#cbd5e1;">프로젝트 총괄</span>
+                </div>
+                <div style="background:#1e293b; padding:1rem 0.7rem; border-radius:7px; text-align:center; font-weight:700; color:#10b981; font-size:1.12rem; box-shadow: 0 2px 8px rgba(0,0,0,0.12); border-left: 4px solid #10b981;">
+                    선하영<br>
+                    <span style="font-size:0.93rem; font-weight:500; color:#cbd5e1;">Member Action 구현</span>
+                </div>
+                <div style="background:#1e293b; padding:1rem 0.7rem; border-radius:7px; text-align:center; font-weight:700; color:#f59e42; font-size:1.12rem; box-shadow: 0 2px 8px rgba(0,0,0,0.12); border-left: 4px solid #f59e42;">
+                    오창준<br>
+                    <span style="font-size:0.93rem; font-weight:500; color:#cbd5e1;">Admin Action 구현</span>
+                </div>
+                <div style="background:#1e293b; padding:1rem 0.7rem; border-radius:7px; text-align:center; font-weight:700; color:#ef4444; font-size:1.12rem; box-shadow: 0 2px 8px rgba(0,0,0,0.12); border-left: 4px solid #ef4444;">
+                    최명헌<br>
+                    <span style="font-size:0.93rem; font-weight:500; color:#cbd5e1;">Board Action 구현</span>
+                </div>
+                </div>
+                        
+                        <!-- 팀 구성 종료 -->
+                    <!-- 📁 폴더구조: 2열 (Java, 프론트) -->
+                <div style="max-height:420px; width:100%; display: grid; grid-template-columns: 1fr 1fr; gap:2.2rem; align-items:flex-start;">
+                <!-- Java 서버 영역 -->
+                <div style="max-height:420px; overflow-y:auto; background:#1e293b; padding:1.1rem; border-radius:6px; border:1px solid #334155;">
+                    <h4 style="color:#38bdf8; margin-bottom:0.7rem; text-align:center; font-size:1.08rem;">☕ Java 서버 구조</h4>
+                    <pre style="color:#cbd5e1; font-size:0.89rem; line-height:1.5; margin:0; overflow-x:auto;">
+    src/
+    ├── com/saeyan/
+    │ ├── dao/
+    │ │ ├── MemberDAO.java
+    │ │ └── BoardDAO.java
+    │ ├── dto/
+    │ │ ├── MemberVO.java
+    │ │ └── BoardVO.java
+    │ ├── servlet/
+    │ │ ├── MemberServlet.java
+    │ │ ├── BoardServlet.java
+    │ │ └── AdminServlet.java
+    │ └── action/
+    │ ├── ActionFactory.java
+    │ ├── LogoutAction.java
+    │ └── UpdateAction.java
+    └──── util/
+        └── DBManager.java
+                    </pre>
+                </div>
+                <!-- 오른쪽: Webapp 구조 -->
+                <div style="background:#1e293b; padding:1.1rem; border-radius:6px; border:1px solid #334155; max-height:420px; overflow-y:auto;">
+                    <h4 style="color:#38bdf8; margin-bottom:0.7rem; text-align:center; font-size:1.08rem;">🎨 Webapp 구조</h4>
+                    <pre style="color:#cbd5e1; font-size:0.89rem; line-height:1.5; margin:0; overflow-x:auto;">
+webapp/
+├── member/
+│   ├── idCheck.jsp
+│   ├── join.jsp
+│   ├── login.jsp
+│   ├── main.jsp
+│   └── memberUpdate.jsp
+├── admin/
+│   ├── board/
+│   │   └── boardManage.jsp
+│   ├── member/
+│   │   ├── memberDetail.jsp
+│   │   └── memberList.jsp
+│   └── adminMain.jsp
+├── board/
+│   ├── boardList.jsp
+│   ├── boardUpdate.jsp
+│   ├── boardView.jsp
+│   └── boardWrite.jsp
+├── common/
+│   ├── checkAdmin.jsp
+│   ├── checkLogin.jsp
+│   ├── footer.jsp
+│   └── header.jsp
+├── css/
+├── script/
+├── error.jsp
+└── index.jsp
+                    </pre>
+                </div>
+            </div>
+        </div>
+    </div><!-- #slide-2 종료 -->
+
+
+        <div class="slide-display" id="slide-3">
+            <div class="slide-content col">
+                <h2>MVC 구조 연계</h2>
+                <span style="margin-left:0.5rem; font-size:1.3rem; color:#cbd5e1; font-weight:500;">
+                            web-study-11 구조를 참고하여 web-study-9,10도 동일한 MVC 패턴으로 프로젝트 구성
+                        </span>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; width: 100%; margin-top: 2rem; height: auto;">
+                    <div class="card">
+                        <h3>Model (모델)</h3>
+                        <ul style="margin-left: 0;">
+                            <li>DAO / VO 클래스</li>
+                            <li>DBManager (DB 처리)</li>
+                            <li>MySQL (데이터 저장)</li>
+                        </ul>
+                        <p style="font-size:0.95rem; color:#94a3b8; margin-top:2rem;">
+                            - 데이터 구조와 DB 연결/처리 담당<br>
+                            - 비즈니스 로직 관리
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3>View (뷰)</h3>
+                        <ul style="margin-left: 0;">
+                            <li>HTML / CSS</li>
+                            <li>JSP (동적 웹페이지 생성)</li>
+                            <li>JavaScript (동적효과 및 인터랙션)</li>
+                        </ul>
+                        <p style="font-size:0.95rem; color:#94a3b8; margin-top:2rem;">
+                            - 사용자에게 실제로 보여지는 화면 담당<br>
+                            - 데이터와 결과를 시각적으로 표시
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3>Controller (컨트롤러)</h3>
+                        <ul style="margin-left: 0;">
+                            <li>Servlet</li>
+                            <li>Action 클래스</li>
+                            <li>Java</li>
+                        </ul>
+                        <p style="font-size:0.95rem; color:#94a3b8; margin-top:2rem;">
+                            - 클라이언트의 요청/응답 흐름 제어<br>
+                            - Model과 View 사이의 중간 역할
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div><!-- #slide-3 종료 -->
+
+        <div class="slide-display" id="slide-5">
+            <div class="slide-content col" style="justify-content:flex-start; padding-top:1.5rem;">
+                
+                <!-- 학습 성과 & 향후 개선 방안 2열 -->
+                <div style="width:100%; display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:flex-start;">
+                    
+                    <!-- 왼쪽: 학습 성과 -->
+                    <div>
+                        <h2 style="color:#38bdf8; margin-bottom:2rem; font-size:1.85rem;">📚 학습 성과</h2>
+                        <ul style="margin-left:1.5rem; color:#cbd5e1;">
+                            <li style="margin-bottom:2rem; font-size:1.05rem;">✅ MVC 구조 이해 및 구현</li>
+                            <li style="margin-bottom:2rem; font-size:1.05rem;">✅ Java, JSP, JavaScript 기초 활용</li>
+                            <li style="margin-bottom:2rem; font-size:1.05rem;">✅ 데이터베이스 설계 및 SQL 작성</li>
+                            <li style="margin-bottom:2rem; font-size:1.05rem;">✅ 팀 협업 및 Git 버전 관리</li>
+                            <li style="margin-bottom:2rem; font-size:1.05rem;">✅ 웹 개발 전체 흐름 경험</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- 오른쪽: 향후 개선 방안 -->
+                    <div>
+                        <h2 style="color:#10b981; margin-bottom:2rem; font-size:1.85rem;">🚀 향후 개선 방안</h2>
+                        <ul style="margin-left:1.5rem; color:#cbd5e1;">
+                            <li style="margin-bottom:2rem; font-size:1.05rem;">🔧 기능별 역할 명확화 & 리팩토링</li>
+                            <li style="margin-bottom:2rem; font-size:1.05rem;">📖 코드 리뷰를 통한 이해도 향상</li>
+                            <li style="margin-bottom:2rem; font-size:1.05rem;">🎨 UI/UX 개선 & 추가 기능 구현</li>
+                            <li style="margin-bottom:2rem; font-size:1.05rem;">🔐 보안 & 성능 최적화</li>
+                            <li style="margin-bottom:2rem; font-size:1.05rem;">👥 사용자 피드백 반영</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div><!-- #slide-4 시간 없어서 삭제 --><!-- #slide-5 종료 -->
+
+         <div class="slide-display" id="slide-6">
+            <div class="slide-content col" style="justify-content:flex-start; padding-top:1.5rem; align-items:flex-start; gap:1.5rem;">
+                <h2>프로젝트를 마치며...</h2>
+                
+                <!-- 팀원 느낀점 4명 -->
+                <div style="width:100%; display:grid; grid-template-columns:repeat(2, 1fr); gap:1.5rem;">
+                    <!-- 오창준 -->
+                    <div style="background:#1e293b; padding:1.2rem; border-radius:7px; border-left:4px solid #f59e42;">
+                        <p style="color:#f59e42; font-weight:700; margin-bottom:0.6rem; font-size:1.05rem;">오창준</p>
+                        <p style="color:#cbd5e1; font-size:0.95rem; line-height:1.6;">
+                            이번 프로젝트를 하면서 웹 구조의 흐름을 이해하는데 많은 도움을 받았습니다. 
+                            그래서 다음 단계인 스프링 수업이 기대됩니다!
+                        </p>
+                    </div>
+                    
+                    <!-- 최명헌 -->
+                    <div style="background:#1e293b; padding:1.2rem; border-radius:7px; border-left:4px solid #ef4444;">
+                        <p style="color:#ef4444; font-weight:700; margin-bottom:0.6rem; font-size:1.05rem;">최명헌</p>
+                        <p style="color:#cbd5e1; font-size:0.95rem; line-height:1.6;">
+                            팀 프로젝트를 하면서 여러 상황과 문제점을 함께 대처하면서 혼자 문제를 안고 가는 게 아니라 
+                            함께 알아보고 서로 간 소통의 중요성을 깨달았습니다. 다음 프로젝트에서는 더 완성도 높은 결과물을 
+                            만들 수 있을 것 같아 기대됩니다!
+                        </p>
+                    </div>
+                    
+                    <!-- 선하영 -->
+                    <div style="background:#1e293b; padding:1.2rem; border-radius:7px; border-left:4px solid #10b981;">
+                        <p style="color:#10b981; font-weight:700; margin-bottom:0.6rem; font-size:1.05rem;">선하영</p>
+                        <p style="color:#cbd5e1; font-size:0.95rem; line-height:1.6;">
+                            MVC 구조를 실제로 구현해보면서 웹 개발의 기초를 탄탄히 다질 수 있었습니다. 
+                            팀원들과의 협력을 통해 개발 과정의 중요성을 배웠고, 향후 더 도전적인 프로젝트에 임할 수 있을 것 같습니다.
+                        </p>
+                    </div>
+                    
+                    <!-- 정용준 -->
+                    <div style="background:#1e293b; padding:1.2rem; border-radius:7px; border-left:4px solid #38bdf8;">
+                        <p style="color:#38bdf8; font-weight:700; margin-bottom:0.6rem; font-size:1.05rem;">정용준</p>
+                        <p style="color:#cbd5e1; font-size:0.95rem; line-height:1.6;">
+                            이 프로젝트를 통해 개발자로서 필요한 기술적 역량뿐만 아니라 팀 협업과 커뮤니케이션의 중요성을 배웠습니다. 
+                            앞으로의 프로젝트에서도 이러한 경험을 바탕으로 더욱 성장하는 개발자가 되겠습니다.
+                        </p>
+                    </div>
+                </div>
+                
+                <div style="margin-top:1.5rem; width:100%; text-align:center; color:#94a3b8; font-size:0.99rem; letter-spacing:0.01em; opacity:0.7;">
+                    모두모두 앞으로도 화이팅~~~~~~~! 802호의 번영을 위하여! 🍻🍻🍻🍻
+                </div>
+            </div>
+        </div><!-- #slide-6 종료 -->
+
+
+
+
+
+
+        <div class="slide-display" id="slide-7">
+            <div class="slide-content center">
+                <h1 style="font-size: 3rem;">감사합니다!</h1>
+                <p style="font-size: 1.25rem; margin-top: 2rem; color: #cbd5e1;"></p>
+                <p class="text-sm-h" style="font-size: 2rem; margin-top: 3rem;"><img width="100px" src="https://github.githubassets.com/assets/mona-loading-dark-7701a7b97370.gif">GitHub: <a href="https://github.com/every-git/daechul-project.git" style="color:#f1f5f9;">daechul-project</a></p>
+            </div>
+        </div><!-- #slide-7 종료 -->
+
+
+        
+        <div class="controls">
+            <button id="prev-btn" onclick="previousSlide()">← 이전</button>
+            <div class="slide-counter">
+                <span id="current-slide">1</span> / <span id="total-slides">8</span>
+            </div>
+            <button id="next-btn" onclick="nextSlide()">다음 →</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen()">🖥️ 전체화면</button>
+        </div>
+
+        <div class="info">
+            <p>💡 팁: <kbd>←</kbd> <kbd>→</kbd> 또는 <kbd>←</kbd> <kbd>→</kbd> 키보드로 슬라이드 이동 가능</p>
+            <p><kbd>F</kbd> 키로 전체화면 모드 진입 / <kbd>ESC</kbd>로 종료</p>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = document.querySelectorAll('.slide-display').length;
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide-display');
+            
+            if (n >= totalSlides) {
+                currentSlide = totalSlides - 1;
+            } else if (n < 0) {
+                currentSlide = 0;
+            } else {
+                currentSlide = n;
+            }
+
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide].classList.add('active');
+
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+
+            // 버튼 활성화/비활성화
+            document.getElementById('prev-btn').disabled = currentSlide === 0;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function previousSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        function toggleFullscreen() {
+            const slide = document.querySelectorAll('.slide-display')[currentSlide];
+            slide.classList.toggle('fullscreen');
+            
+            if (slide.classList.contains('fullscreen')) {
+                // 풀스크린 나가기 버튼 추가
+                const exitBtn = document.createElement('button');
+                exitBtn.className = 'exit-fullscreen';
+                exitBtn.textContent = 'ESC: 종료';
+                exitBtn.onclick = () => toggleFullscreen();
+                slide.appendChild(exitBtn);
+            } else {
+                const exitBtn = slide.querySelector('.exit-fullscreen');
+                if (exitBtn) exitBtn.remove();
+            }
+        }
+
+        // 키보드 컨트롤
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            } else if (e.key.toLowerCase() === 'f') {
+                e.preventDefault();
+                toggleFullscreen();
+            } else if (e.key === 'Escape') {
+                const slide = document.querySelectorAll('.slide-display')[currentSlide];
+                if (slide.classList.contains('fullscreen')) {
+                    toggleFullscreen();
+                }
+            }
+        });
+
+        // 초기 상태
+        showSlide(0);
+    </script>
+</body>
+</html>
